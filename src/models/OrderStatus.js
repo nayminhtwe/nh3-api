@@ -1,0 +1,27 @@
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
+const User = require("./User");
+
+const OrderStatus = sequelize.define("OrderStatus", {
+  id: {
+    type: DataTypes.BIGINT.UNSIGNED,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  userId: {
+    type: DataTypes.BIGINT.UNSIGNED,
+    allowNull: false,
+    references: {
+      model: User,
+      key: "id",
+    },
+  },
+});
+
+OrderStatus.belongsTo(User, { foreignKey: "userId", onDelete: "CASCADE" });
+
+module.exports = OrderStatus;
