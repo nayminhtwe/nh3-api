@@ -11,10 +11,10 @@ const CartController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { itemId, OE_NO, quantity } = req.body;
+    const { item_id, OE_NO, quantity } = req.body;
 
     const result = await Cart.create({
-      itemId,
+      item_id,
       OE_NO,
       quantity,
     });
@@ -30,7 +30,7 @@ const CartController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const allowFields = ["itemId", "OE_NO", "quantity"];
+    const allowFields = ["item_id", "OE_NO", "quantity"];
     const filteredBody = filterAllowFields(req.body, allowFields);
 
     const [update] = await Cart.update(filteredBody, { where: { id } });

@@ -9,31 +9,31 @@ const validateId = [
 ];
 
 const validateBody = [
-  body("cartId")
+  body("cart_id")
     .notEmpty()
-    .withMessage("Cart ID is required")
+    .withMessage("Cart _id is required")
     .isInt()
-    .withMessage("Cart ID must be an integer"),
-  body("addressId")
+    .withMessage("Cart _id must be an integer"),
+  body("address_id")
     .notEmpty()
-    .withMessage("Address ID is required")
+    .withMessage("Address _id is required")
     .isInt()
-    .withMessage("Address ID must be an integer"),
-  body("orderStatusId")
+    .withMessage("Address _id must be an integer"),
+  body("orderstatus_id")
     .notEmpty()
-    .withMessage("Order Status ID is required")
+    .withMessage("Order Status _id is required")
     .isInt()
-    .withMessage("Order Status ID must be an integer"),
-  body("promotionId")
+    .withMessage("Order Status _id must be an integer"),
+  body("promotion_id")
     .optional()
     .isInt()
-    .withMessage("Promotion ID must be an integer"),
-  body("itemId")
+    .withMessage("Promotion _id must be an integer"),
+  body("item_id")
     .notEmpty()
-    .withMessage("Item ID is required")
+    .withMessage("Item _id is required")
     .isInt()
-    .withMessage("Item ID must be an integer"),
-  body("userId")
+    .withMessage("Item _id must be an integer"),
+  body("user_id")
     .notEmpty()
     .withMessage("User ID is required")
     .isInt()
@@ -48,7 +48,7 @@ const validateBody = [
     .withMessage("Delivery Fees is required")
     .isInt()
     .withMessage("Delivery Fees must be an integer"),
-  body("totalPrice")
+  body("totalprice")
     .notEmpty()
     .withMessage("Total Price is required")
     .isInt()

@@ -5,16 +5,16 @@ class OrderStatusResource extends Resource {
     return {
       id: this.id,
       status: this.status,
-      userId: this.userId,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      user: this.User
+      user_id: this.user_id,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      user: this.user
         ? {
-            id: this.User.id,
-            name: this.User.name,
-            email: this.User.email,
-            password: this.User.password,
-            phone: this.User.phone,
+            id: this.user.id,
+            name: this.user.name,
+            email: this.user.email,
+            password: this.user.password,
+            phone: this.user.phone,
           }
         : null,
     };

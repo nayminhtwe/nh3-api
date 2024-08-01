@@ -9,8 +9,15 @@ const validateLogin = [
 ];
 
 const validateRegister = [
-  body("phone").notEmpty(),
+  body("name").notEmpty().isString().withMessage("name must be string"),
   body("email").notEmpty().isEmail(),
+  body("password")
+    .notEmpty()
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
+];
+
+const validatePassword = [
   body("password")
     .notEmpty()
     .isLength({ min: 6 })
@@ -24,5 +31,6 @@ const validateId = [
 module.exports = {
   validateLogin,
   validateRegister,
+  validatePassword,
   validateId,
 };

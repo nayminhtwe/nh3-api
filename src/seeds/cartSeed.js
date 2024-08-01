@@ -1,14 +1,14 @@
 const Cart = require("../models/Cart");
 
-module.exports = async (req, res) => {
+async function cartSeed() {
   const carts = [
     {
-      itemId: 1,
+      item_id: 1,
       OE_NO: "ABC123",
       quantity: 2,
     },
     {
-      itemId: 2,
+      item_id: 2,
       OE_NO: "XYZ789",
       quantity: 1,
     },
@@ -16,4 +16,8 @@ module.exports = async (req, res) => {
 
   await Cart.bulkCreate(carts);
   console.log("inserted cart");
-};
+}
+
+cartSeed();
+
+module.exports = cartSeed;

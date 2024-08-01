@@ -10,12 +10,6 @@ const EngineController = {
   create: asyncHandler(async (req, res) => {
     const { enginepower } = req.body;
 
-    if (!enginepower) {
-      return res.status(400).json({
-        msg: "enginepower required!",
-      });
-    }
-
     const result = await Engine.create({ enginepower });
     return res.json(result);
   }),

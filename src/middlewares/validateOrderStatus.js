@@ -6,7 +6,7 @@ const validateId = [
 
 const validateBody = [
   body("status").notEmpty().isString().withMessage("status must be string"),
-  body("userId").notEmpty().isInt().withMessage("userId must be integer"),
+  body("user_id").notEmpty().isInt().withMessage("user_id must be integer"),
 ];
 
 module.exports = {

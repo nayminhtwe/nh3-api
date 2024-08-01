@@ -13,11 +13,11 @@ const OrderStatusController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { status, userId } = req.body;
+    const { status, user_id } = req.body;
 
     const result = await OrderStatus.create({
       status,
-      userId,
+      user_id,
     });
 
     const orderStatus = await OrderStatus.findOne({
@@ -31,7 +31,7 @@ const OrderStatusController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const allowFields = ["status", "userId"];
+    const allowFields = ["status", "user_id"];
     const filteredBody = filterAllowFields(req.body, allowFields);
 
     const [update] = await OrderStatus.update(filteredBody, { where: { id } });

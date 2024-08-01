@@ -5,7 +5,10 @@ const validateId = [
 ];
 const validateBody = [
   body("name").notEmpty().isString().isLength({ max: 255 }),
-  body("companyId").notEmpty().isInt(),
+  body("company_id")
+    .notEmpty()
+    .isInt()
+    .withMessage("company_id must be integer"),
 ];
 
 module.exports = {

@@ -4,84 +4,70 @@ class OrderResource extends Resource {
   toArray() {
     return {
       id: Number(this.id),
-      cartId: this.cartId,
-      addressId: this.addressId,
-      orderStatusId: this.orderStatusId,
-      promotionId: this.promotionId,
-      itemId: this.itemId,
-      userId: this.userId,
+      cart_id: this.cart_id,
+      address_id: this.address_id,
+      order_status_id: this.order_status_id,
+      promotion_id: this.promotion_id,
+      item_id: this.item_id,
+      user_id: this.user_id,
       quantity: this.quantity,
       deliveryfees: this.deliveryfees,
-      totalPrice: this.totalPrice,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      cart: this.Cart
+      totalprice: this.totalprice,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      cart: this.cart
         ? {
-            id: this.Cart.id,
-            itemId: this.Cart.itemId,
-            OE_NO: this.Cart.OE_NO,
-            quantity: this.Cart.quantity,
+            id: this.cart.id,
+            itemId: this.cart.item_id,
+            OE_NO: this.cart.OE_NO,
+            quantity: this.cart.quantity,
           }
         : null,
-      address: this.Address
+      address: this.address
         ? {
-            id: this.Address.id,
-            userId: this.Address.userId,
-            buildingNo: this.Address.buildingNo,
-            floor: this.Address.floor,
-            isSave: this.Address.isSave,
-            unit: this.Address.unit,
-            addressTitle: this.Address.addressTitle,
-            street: this.Address.street,
+            id: this.address.id,
+            userId: this.address.user_id,
+            buildingNo: this.address.buildingNo,
+            floor: this.address.floor,
+            isSave: this.address.isSave,
+            unit: this.address.unit,
+            addressTitle: this.address.addressTitle,
+            street: this.address.street,
           }
         : null,
-      orderStatus: this.OrderStatus
+      order_status: this.order_status
         ? {
-            id: this.OrderStatus.id,
-            status: this.OrderStatus.status,
-            userId: this.OrderStatus.userId,
-            user: this.OrderStatus.User
-              ? {
-                  id: this.OrderStatus.User.id,
-                  name: this.OrderStatus.User.name,
-                  email: this.OrderStatus.User.email,
-                }
-              : null,
+            id: this.order_status.id,
+            status: this.order_status.status,
+            userId: this.order_status.userId,
           }
         : null,
-      promotion: this.Promotion
+      promotion: this.promotion
         ? {
-            id: this.Promotion.id,
-            OE_NO: this.Promotion.OE_NO,
-            type: this.Promotion.type,
+            id: this.promotion.id,
+            OE_NO: this.promotion.OE_NO,
+            type: this.promotion.type,
           }
         : null,
-      item: this.Item
+      item: this.item
         ? {
-            id: this.Item.id,
-            name: this.Item.name,
-            brandName: this.Item.brandName,
-            secondCategoryId: this.Item.secondCategoryId,
-            mainCategoryId: this.Item.mainCategoryId,
-            isFeature: this.Item.isFeature,
-            isUniversal: this.Item.isUniversal,
-            OE_NO: this.Item.OE_NO,
-            price: this.Item.price,
+            id: this.item.id,
+            name: this.item.name,
+            brandName: this.item.brandName,
+            second_category_id: this.item.second_category_id,
+            main_category_id: this.item.main_category_id,
+            is_feature: this.item.is_feature,
+            is_universal: this.item.is_universal,
+            OE_NO: this.item.OE_NO,
+            price: this.item.price,
           }
         : null,
-      user: this.User
+      user: this.user
         ? {
-            id: this.User.id,
-            phone: this.User.phone,
-            email: this.User.email,
-            status: this.User.status,
-            roleId: this.User.roleId,
-            role: this.User.Role
-              ? {
-                  id: this.User.Role.id,
-                  name: this.User.Role.name,
-                }
-              : null,
+            id: this.user.id,
+            name: this.user.name,
+            email: this.user.email,
+            status: this.user.status,
           }
         : null,
     };

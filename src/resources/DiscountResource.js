@@ -4,22 +4,22 @@ class DiscountResource extends Resource {
   toArray() {
     return {
       id: this.id,
-      itemId: this.itemId,
-      startDate: this.startDate,
-      endDate: this.endDate,
-      discountTypeId: this.discountTypeId,
-      maxItem: this.maxItem,
-      isActive: this.isActive,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      item: this.Item ? this.tranformItem(this.Item) : null,
+      item_id: this.item_id,
+      start_date: this.start_date,
+      end_date: this.end_date,
+      discount_type_id: this.discount_type_id,
+      max_item: this.max_item,
+      is_active: this.is_active,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      item: this.item ? this.tranformItem(this.item) : null,
 
       discountType: this.DiscountType
         ? {
             id: this.DiscountType.id,
             type: this.DiscountType.type,
-            createdAt: this.DiscountType.createdAt,
-            updatedAt: this.DiscountType.updatedAt,
+            created_at: this.DiscountType.created_at,
+            updated_at: this.DiscountType.updated_at,
           }
         : null,
     };
@@ -36,8 +36,8 @@ class DiscountResource extends Resource {
       isUniversal: item.isUniversal,
       OE_NO: item.OE_NO,
       price: item.price,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
+      created_at: item.created_at,
+      updated_at: item.updated_at,
     };
   }
 }

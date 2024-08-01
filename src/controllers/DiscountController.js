@@ -12,16 +12,22 @@ const DiscountController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { itemId, startDate, endDate, discountTypeId, maxItem, isActive } =
-      req.body;
+    const {
+      item_id,
+      start_date,
+      end_date,
+      discount_type_id,
+      max_item,
+      is_active,
+    } = req.body;
 
     const discount = await Discount.create({
-      itemId,
-      startDate,
-      endDate,
-      discountTypeId,
-      maxItem,
-      isActive,
+      item_id,
+      start_date,
+      end_date,
+      discount_type_id,
+      max_item,
+      is_active,
     });
 
     return res.json(new DiscountResource(discount).exec());

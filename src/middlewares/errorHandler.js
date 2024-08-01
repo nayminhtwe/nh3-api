@@ -1,7 +1,7 @@
 module.exports = (err, req, res, next) => {
-  console.error(err.message);
+  console.error(err.stack);
 
-  return res.status(500).json({
-    msg: err.message,
+  return res.status(err.status || 500).json({
+    msg: err.message || "An unknown error occured",
   });
 };

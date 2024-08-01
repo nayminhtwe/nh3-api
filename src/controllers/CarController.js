@@ -20,15 +20,15 @@ const CarController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { companyId, seriesId, modelId, yearId, engineId, description } =
+    const { company_id, series_id, model_id, year_id, engine_id, description } =
       req.body;
 
     const result = await Car.create({
-      companyId,
-      seriesId,
-      modelId,
-      yearId,
-      engineId,
+      company_id,
+      series_id,
+      model_id,
+      year_id,
+      engine_id,
       description,
     });
 
@@ -46,11 +46,11 @@ const CarController = {
     const { id } = req.params;
 
     const allowFields = [
-      "companyId",
-      "seriesId",
-      "modelId",
-      "yearId",
-      "engineId",
+      "company_id",
+      "series_id",
+      "model_id",
+      "year_id",
+      "engine_id",
       "description",
     ];
 
@@ -64,8 +64,7 @@ const CarController = {
 
     console.log(result);
 
-    if (!result)
-      return res.status(400).json({ msg: "update failed! && check your id!" });
+    if (!result) return res.status(400).json({ msg: "update failed! " });
 
     const updatedCar = await Car.findOne({
       where: { id },

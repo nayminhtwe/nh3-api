@@ -1,17 +1,24 @@
 const CarItem = require("../models/CarItem");
 
-module.exports = async function () {
+async function carItemSeed() {
   const carItems = [
     {
-      itemId: 1,
-      carId: 1,
+      item_id: 1,
+      car_id: 1,
     },
     {
-      itemId: 2,
-      carId: 2,
+      item_id: 2,
+      car_id: 2,
+    },
+    {
+      item_id: 3,
+      car_id: 3,
     },
   ];
 
   await CarItem.bulkCreate(carItems);
   console.log("Inserted car items");
-};
+}
+
+carItemSeed();
+module.exports = carItemSeed;

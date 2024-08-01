@@ -8,25 +8,35 @@ const {
   validateRegister,
   validateLogin,
   validateId,
+  validatePassword,
 } = require("../middlewares/validate");
 
 const validator = require("../utils/validator");
 
 router.get("/verify", auth, UserController.verify);
 
-router.get("/users", UserController.find);
-
-router.get("/users/:id", validateId, validator, UserController.show);
-
-router.get("/logout", UserController.logout);
-
 router.post("/register", validateRegister, validator, UserController.register);
 
 router.post("/login", validateLogin, validator, UserController.login);
 
-router.post("/refresh", UserController.refresh);
+router.post("/refresh-token", UserController.refresh);
 
-router.put("/users/:id", validateId, validator, UserController.update);
+router.get("/users", UserController.find);
+
+router.patch(
+  "/users/:id/change-password",
+  validateId,
+  validatePassword,
+  validator,
+  UserController.passwordChange
+);
+
+router.post(
+  "/users/:id/restore",
+  validateId,
+  validator,
+  UserController.restore
+);
 
 router.delete("/users/:id", validateId, validator, UserController.destroy);
 

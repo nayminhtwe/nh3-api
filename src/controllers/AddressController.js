@@ -2,19 +2,23 @@ const Address = require("../models/Address");
 const asyncHandler = require("express-async-handler");
 const filterAllowFields = require("../utils/filterAllowFields");
 const User = require("../models/User");
+const AddressResource = require("../resources/AddressResource");
+
+const include = [User];
 
 const AddressController = {
   find: asyncHandler(async (req, res) => {
-    const addresss = await Address.findAll({ include: User });
-    return res.json(addresss);
+    const addresss = await Address.findAll({ include });
+
+    return res.json(AddressResource.collection(addresss));
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { userId, buildingNo, floor, isSave, unit, addressTitle, street } =
+    const { user_id, buildingNo, floor, isSave, unit, addressTitle, street } =
       req.body;
 
-    const address = await Address.create({
-      userId,
+    const result = await Address.create({
+      user_id,
       buildingNo,
       floor,
       isSave,
@@ -23,14 +27,17 @@ const AddressController = {
       street,
     });
 
-    return res.status(201).json(address);
+    if (result) {
+      const address = await Address.findByPk(result.id, { include });
+      return res.status(201).json(new AddressResource(address).exec());
+    }
   }),
 
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const allowFields = [
-      "userId",
+      "user_id",
       "buildingNo",
       "floor",
       "isSave",
@@ -45,7 +52,7 @@ const AddressController = {
     if (!update) return res.status(400).json({ msg: "Update failed" });
 
     const updateData = await Address.findOne({ where: { id } });
-    return res.json(updateData);
+    return res.json(new AddressResource(updateData).exec());
   }),
 
   destroy: asyncHandler(async (req, res) => {

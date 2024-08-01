@@ -1,12 +1,20 @@
 const OrderItem = require("../models/OrderItem");
 
-module.exports = async function () {
+async function orderItemSeed() {
   const orderItems = [
     {
-      itemId: 1,
+      item_id: 1,
       subprice: 20.0,
-      totalPrice: 40.0,
+      totalprice: 40.0,
       quantity: 1,
+      deliveryfees: 5.0,
+      note: "Sample note 1",
+    },
+    {
+      item_id: 3,
+      subprice: 200,
+      totalprice: 45.0,
+      quantity: 3,
       deliveryfees: 5.0,
       note: "Sample note 1",
     },
@@ -14,4 +22,8 @@ module.exports = async function () {
 
   await OrderItem.bulkCreate(orderItems);
   console.log("Inserted order items");
-};
+}
+
+orderItemSeed();
+
+module.exports = orderItemSeed;

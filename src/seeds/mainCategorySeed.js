@@ -1,6 +1,6 @@
 const MainCategory = require("../models/MainCategory");
 
-module.exports = async function () {
+async function mainCategorySeed() {
   const mainCategorySamples = [
     { name: "Exterior Accessories" },
     { name: "Interior Accessories" },
@@ -11,4 +11,8 @@ module.exports = async function () {
 
   await MainCategory.bulkCreate(mainCategorySamples);
   console.log("Inserted main categories");
-};
+}
+
+mainCategorySeed();
+
+module.exports = mainCategorySeed;

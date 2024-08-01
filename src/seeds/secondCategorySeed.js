@@ -1,14 +1,17 @@
 const SecondCategory = require("../models/SecondCategory");
 
-module.exports = async function () {
+async function secondCategorySeed() {
   const secondCategorySamples = [
-    { name: "Car Covers", mainCategoryId: 1 },
-    { name: "Seat Covers", mainCategoryId: 2 },
-    { name: "Exhaust Systems", mainCategoryId: 3 },
-    { name: "Brake Pads", mainCategoryId: 4 },
-    { name: "Diagnostic Tools", mainCategoryId: 5 },
+    { name: "Car Covers" },
+    { name: "Seat Covers" },
+    { name: "Exhaust Systems" },
+    { name: "Brake Pads" },
+    { name: "Diagnostic Tools" },
   ];
 
   await SecondCategory.bulkCreate(secondCategorySamples);
   console.log("Inserted second categories");
-};
+}
+
+secondCategorySeed();
+module.exports = secondCategorySeed;

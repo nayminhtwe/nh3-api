@@ -4,52 +4,53 @@ class CarResource extends Resource {
   toArray() {
     return {
       id: Number(this.id),
-      companyId: this.companyId,
-      seriesId: this.seriesId,
-      modelId: this.modelId,
-      yearId: this.yearId,
-      engineId: this.engineId,
+      company_id: this.company_id,
+      series_id: this.series_id,
+      model_id: this.model_id,
+      year_id: this.year_id,
+      engine_id: this.engine_id,
       description: this.description,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      company: this.Company
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      company: this.company
         ? {
-            id: this.Company.id,
-            name: this.Company.name,
-            createdAt: this.Company.createdAt,
-            updatedAt: this.Company.updatedAt,
+            id: this.company.id,
+            name: this.company.name,
+            created_at: this.company.created_at,
+            updated_at: this.company.updated_at,
           }
         : null,
-      serie: this.Series
+      serie: this.serie
         ? {
-            id: this.Series.id,
-            name: this.Series.name,
-            createdAt: this.Series.createdAt,
-            updatedAt: this.Series.updatedAt,
+            id: this.serie.id,
+            name: this.serie.name,
+            created_at: this.serie.created_at,
+            updated_at: this.serie.updated_at,
           }
         : null,
-      model: this.CarModel
+      model: this.car_model
         ? {
-            id: this.CarModel.id,
-            name: this.CarModel.name,
-            createdAt: this.CarModel.createdAt,
-            updatedAt: this.CarModel.updatedAt,
+            id: this.car_model.id,
+            name: this.car_model.name,
+            created_at: this.car_model.created_at,
+            updated_at: this.car_model.updated_at,
           }
         : null,
-      year: this.Year
+      year: this.year
         ? {
-            id: this.Year.id,
-            year: this.Year.year,
-            createdAt: this.Year.createdAt,
-            updatedAt: this.Year.updatedAt,
+            id: this.year.id,
+            serie_id: this.year.series_id,
+            year: this.year.year,
+            created_at: this.year.created_at,
+            updated_at: this.year.updated_at,
           }
         : null,
-      engine: this.Engine
+      engine: this.engine_power
         ? {
-            id: this.Engine.id,
-            enginepower: this.Engine.enginepower,
-            createdAt: this.Engine.createdAt,
-            updatedAt: this.Engine.updatedAt,
+            id: this.engine_power.id,
+            engine_power: this.engine_power.enginepower,
+            created_at: this.engine_power.created_at,
+            updated_at: this.engine_power.updated_at,
           }
         : null,
     };

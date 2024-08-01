@@ -7,21 +7,21 @@ const validateBody = [
   body("name").notEmpty().isString().isLength({ max: 255 }),
   body("brandName").notEmpty().isString().isLength({ max: 255 }),
 
-  body("secondCategoryId")
+  body("second_category_id")
     .notEmpty()
     .isInt()
-    .withMessage("secondCategoryId must be integer"),
-  body("mainCategoryId")
+    .withMessage("second_category_id must be integer"),
+  body("main_category_id")
     .notEmpty()
     .isInt()
-    .withMessage("mainCategoryId must be integer"),
+    .withMessage("main_category_id must be integer"),
 
-  body("isFeature")
-    .notEmpty()
+  body("is_feature")
+    .optional()
     .isBoolean()
     .withMessage("isFeature must be boolean"),
-  body("isUniversal")
-    .notEmpty()
+  body("is_universal")
+    .optional()
     .isBoolean()
     .withMessage("isUniversal must be integer"),
 

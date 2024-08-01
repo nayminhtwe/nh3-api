@@ -5,8 +5,8 @@ const validateId = [
 ];
 
 const validateBody = [
-  body("itemId").notEmpty().isInt().withMessage("itemId must be integer"),
-  body("carId").notEmpty().isInt().withMessage("carId must be integer"),
+  body("item_id").notEmpty().isInt().withMessage("itemId must be integer"),
+  body("car_id").notEmpty().isInt().withMessage("carId must be integer"),
 ];
 
 module.exports = {

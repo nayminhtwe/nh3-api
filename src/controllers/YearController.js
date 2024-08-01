@@ -8,19 +8,14 @@ const { where } = require("sequelize");
 const YearController = {
   find: asyncHandler(async (req, res) => {
     const years = await Year.findAll({ include: Series });
+    console.log(years);
     return res.json(YearResource.collection(years));
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { seriesId, year } = req.body;
+    const { series_id, year } = req.body;
 
-    if (!year || !seriesId) {
-      return res.status(400).json({
-        msg: "year && seriesId fields required!",
-      });
-    }
-
-    const result = await Year.create({ seriesId, year });
+    const result = await Year.create({ series_id, year });
 
     const data = await Year.findOne({
       where: { id: result.id },
@@ -33,7 +28,7 @@ const YearController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const allowFields = ["seriesId", "year"];
+    const allowFields = ["series_id", "year"];
     const bodyFiltered = filterAllowFields(req.body, allowFields);
 
     const [result] = await Year.update(bodyFiltered, { where: { id } });

@@ -35,9 +35,7 @@ async function auth(req, res, next) {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-
-    const user = await User.findOne({ where: { id: decoded.id } });
+    const user = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
     if (!user) {
       return res.status(404).json({
@@ -45,19 +43,7 @@ async function auth(req, res, next) {
       });
     }
 
-    if (token !== user.accessToken) {
-      return res.status(400).json({
-        msg: "Invalid token!",
-      });
-    }
-
-    const userData = {
-      id: user.id,
-      email: user.email,
-      phone: user.phone,
-    };
-
-    req.user = userData;
+    req.user = user;
     next();
   } catch (e) {
     return res.status(500).json({

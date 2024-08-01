@@ -14,9 +14,9 @@ const CarItemController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { itemId, carId } = req.body;
+    const { item_id, car_id } = req.body;
 
-    const result = await CarItem.create({ itemId, carId });
+    const result = await CarItem.create({ item_id, car_id });
 
     const carItem = await CarItem.findOne({
       where: { id: result.id },
@@ -29,7 +29,7 @@ const CarItemController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const allowFields = ["itemId", "carId"];
+    const allowFields = ["item_id", "car_id"];
 
     const filteredBody = filterAllowFields(req.body, allowFields);
 

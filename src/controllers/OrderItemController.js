@@ -7,18 +7,17 @@ const OrderItemResource = require("../resources/OrderItemResource");
 const OrderItemController = {
   find: asyncHandler(async (req, res) => {
     const orderItems = await OrderItem.findAll({ include: Item });
-    console.log(orderItems);
     return res.json(OrderItemResource.collection(orderItems));
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { itemId, subprice, totalPrice, quantity, deliveryfees, note } =
+    const { item_id, subprice, totalprice, quantity, deliveryfees, note } =
       req.body;
 
     const result = await OrderItem.create({
-      itemId,
+      item_id,
       subprice,
-      totalPrice,
+      totalprice,
       quantity,
       deliveryfees,
       note,
@@ -36,14 +35,14 @@ const OrderItemController = {
     const { id } = req.params;
 
     const allowFields = [
-      "itemId",
+      "item_id",
       "subprice",
-      "totalPrice",
+      "totalprice",
       "quantity",
       "deliveryfees",
       "note",
     ];
-    const filteredBody = await filterAllowFields(req.body, allowFields);
+    const filteredBody = filterAllowFields(req.body, allowFields);
 
     const [update] = await OrderItem.update(filteredBody, { where: { id } });
 

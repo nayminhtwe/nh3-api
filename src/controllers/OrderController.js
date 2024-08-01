@@ -7,16 +7,15 @@ const OrderStatus = require("../models/OrderStatus");
 const Promotion = require("../models/Promotion");
 const Item = require("../models/Item");
 const User = require("../models/User");
-const Role = require("../models/Role");
 const filterAllowFields = require("../utils/filterAllowFields");
 
 const orderIncludes = [
   { model: Cart },
-  { model: Address },
-  { model: OrderStatus, include: [User] },
+  { model: OrderStatus },
   { model: Promotion },
   { model: Item },
-  { model: User, include: [Role] },
+  { model: Address },
+  { model: User },
 ];
 
 const OrderController = {
@@ -27,28 +26,28 @@ const OrderController = {
 
   create: asyncHandler(async (req, res) => {
     const {
-      cartId,
-      addressId,
-      orderStatusId,
-      promotionId,
-      itemId,
-      userId,
+      cart_id,
+      address_id,
+      orderstatus_id,
+      promotion_id,
+      item_id,
+      user_id,
       quantity,
       deliveryfees,
-      totalPrice,
+      totalprice,
     } = req.body;
 
     try {
       const order = await Order.create({
-        cartId,
-        addressId,
-        orderStatusId,
-        promotionId,
-        itemId,
-        userId,
+        cart_id,
+        address_id,
+        orderstatus_id,
+        promotion_id,
+        item_id,
+        user_id,
         quantity,
         deliveryfees,
-        totalPrice,
+        totalprice,
       });
 
       const createdOrder = await Order.findByPk(order.id, {
@@ -64,15 +63,15 @@ const OrderController = {
     const { id } = req.params;
 
     const allowFields = [
-      "cartId",
-      "addressId",
-      "orderStatusId",
-      "promotionId",
-      "itemId",
-      "userId",
+      "cart_id",
+      "address_id",
+      "orderstatus_id",
+      "promotion_id",
+      "item_id",
+      "user_id",
       "quantity",
       "deliveryfees",
-      "totalPrice",
+      "totalprice",
     ];
 
     const filteredBody = filterAllowFields(req.body, allowFields);

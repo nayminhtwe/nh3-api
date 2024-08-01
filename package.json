@@ -22,7 +22,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/server",
     "sync": "node src/utils/sync",
-    "seed": "node src/seeds/seed"
+    "seed:all": "node src/seeds/seed"
   },
   "keywords": [],
   "author": "",

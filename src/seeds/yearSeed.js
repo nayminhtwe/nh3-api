@@ -1,14 +1,18 @@
 const Year = require("../models/Year");
 
-module.exports = async function () {
+async function yearSeed() {
   const years = [
-    { seriesId: 1, year: 2020 },
-    { seriesId: 2, year: 2021 },
-    { seriesId: 3, year: 2022 },
-    { seriesId: 4, year: 2023 },
-    { seriesId: 5, year: 2024 },
+    { series_id: 1, year: 2020 },
+    { series_id: 2, year: 2021 },
+    { series_id: 3, year: 2022 },
+    { series_id: 4, year: 2023 },
+    { series_id: 5, year: 2024 },
   ];
 
   await Year.bulkCreate(years);
   console.log("Inserted years");
-};
+}
+
+yearSeed();
+
+module.exports = yearSeed;

@@ -6,24 +6,29 @@ class CarItemResource extends Resource {
       id: Number(this.id),
       itemId: this.itemId,
       carId: this.carId,
-      item: this.Item
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      item: this.item
         ? {
-            id: this.Item.id,
-            name: this.Item.name,
-            createdAt: this.Item.createdAt,
-            updatedAt: this.Item.updatedAt,
+            id: this.item.id,
+            name: this.item.name,
+            created_at: this.item.created_at,
+            updated_at: this.item.updated_at,
           }
         : null,
-      car: this.Car
+      car: this.car
         ? {
-            id: this.Car.id,
-            name: this.Car.name,
-            createdAt: this.Car.createdAt,
-            updatedAt: this.Car.updatedAt,
+            id: this.car.id,
+            company_id: this.car.company_id,
+            series_id: this.car.series_id,
+            model_id: this.car.model_id,
+            year_id: this.car.year_id,
+            engine_id: this.car.engine_id,
+            description: this.car.description,
+            created_at: this.car.created_at,
+            updated_at: this.car.updated_at,
           }
         : null,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
     };
   }
 }

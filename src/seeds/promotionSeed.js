@@ -1,6 +1,6 @@
 const Promotion = require("../models/Promotion");
 
-module.exports = async (req, res) => {
+async function promotionSeed() {
   const promotions = [
     {
       OE_NO: "PROMO123",
@@ -14,4 +14,8 @@ module.exports = async (req, res) => {
 
   await Promotion.bulkCreate(promotions);
   console.log("inseretd pormotions");
-};
+}
+
+promotionSeed();
+
+module.exports = promotionSeed;

@@ -5,17 +5,17 @@ class CarModelResource extends Resource {
     return {
       id: Number(this.id),
       name: this.name,
-      companyId: this.companyId,
-      company: this.Company
+      company_id: this.company_id,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      company: this.company
         ? {
-            id: this.Company.id,
-            name: this.Company.name,
-            createdAt: this.Company.createdAt,
-            updatedAt: this.Company.updatedAt,
+            id: this.company.id,
+            name: this.company.name,
+            created_at: this.company.created_at,
+            updated_at: this.company.updated_at,
           }
         : null,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
     };
   }
 }

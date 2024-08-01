@@ -5,12 +5,10 @@ const validateId = [
 ];
 
 const validateBody = [
-  body("itemId").notEmpty(),
-  body("startDate").notEmpty().isDate().withMessage("startDate must be date"),
-  body("endDate").notEmpty().isDate().withMessage("endDate must be date"),
-  body("discountTypeId").notEmpty().isInt(),
-  body("maxItem").notEmpty().isInt(),
-  body("isActive").notEmpty().isBoolean(),
+  body("item_id").notEmpty(),
+  body("discount_type_id").notEmpty().isInt(),
+  body("max_item").notEmpty().isInt(),
+  body("is_active").notEmpty().isBoolean(),
 ];
 
 module.exports = {

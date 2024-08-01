@@ -1,30 +1,31 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
-module.exports = async function () {
+async function userSeed() {
   const hash = await bcrypt.hash("password", 10);
 
   const users = [
     {
-      phone: 343243,
+      name: "Kyaw Gyi",
       email: "kyaw@gmail.com",
       password: hash,
-      roleId: 1,
     },
     {
-      phone: 92343,
+      name: "Mya Mya",
       email: "mya@gmail.com",
       password: hash,
-      roleId: 2,
     },
     {
-      phone: 123456789,
+      name: "Alice",
       email: "alice@gmail.com",
       password: hash,
-      roleId: 3,
     },
   ];
 
   await User.bulkCreate(users);
   console.log("Inserted users");
-};
+}
+
+userSeed();
+
+module.exports = userSeed;

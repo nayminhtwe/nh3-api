@@ -4,16 +4,16 @@ class OrderItemResource extends Resource {
   toArray() {
     return {
       id: this.id,
-      itemId: this.itemId,
+      item_id: this.item_id,
       subprice: this.subprice,
-      totalPrice: this.totalPrice,
+      totalprice: this.totalprice,
       quantity: this.quantity,
       deliveryfees: this.deliveryfees,
       note: this.note,
-      item: this.Item
+      item: this.item
         ? {
-            id: this.Item.id,
-            name: this.Item.name,
+            id: this.item.id,
+            name: this.item.name,
           }
         : null,
     };

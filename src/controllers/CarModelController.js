@@ -14,14 +14,11 @@ const CarModelController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { name, companyId } = req.body;
+    const { name, company_id } = req.body;
 
-    const result = await CarModel.create({ name, companyId });
+    const result = await CarModel.create({ name, company_id });
 
-    const carModel = await CarModel.findOne({
-      where: { id: result.id },
-      include: Company,
-    });
+    const carModel = await CarModel.findByPk(result.id, { include: Company });
 
     const carModelResource = new CarModelResource(carModel).exec();
     return res.json(carModelResource);
@@ -29,12 +26,12 @@ const CarModelController = {
 
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, companyId } = req.body;
+    const { name, company_id } = req.body;
 
-    if (!name && !companyId)
+    if (!name && !company_id)
       return res.status(400).json({ msg: "Invalid input parameters!" });
 
-    const allowFields = ["name", "companyId"];
+    const allowFields = ["name", "company_id"];
     const bodyFiltered = filterAllowFields(req.body, allowFields);
 
     const [result] = await CarModel.update(bodyFiltered, { where: { id } });

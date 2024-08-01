@@ -20,31 +20,31 @@ const ItemController = {
     const {
       name,
       brandName,
-      secondCategoryId,
-      mainCategoryId,
-      isFeature,
-      isUniversal,
+      second_category_id,
+      main_category_id,
+      is_feature,
+      is_universal,
       OE_NO,
       price,
     } = req.body;
 
+    console.log(req.body);
+
     const result = await Item.create({
       name,
       brandName,
-      secondCategoryId,
-      mainCategoryId,
-      isFeature,
-      isUniversal,
+      second_category_id,
+      main_category_id,
+      is_feature,
+      is_universal,
       OE_NO,
       price,
     });
 
-    const item = await Item.findOne({
-      where: { id: result.id },
-      include: includeFields,
-    });
-
-    return res.json(new ItemResource(item).exec());
+    if (result) {
+      const item = new ItemResource(result).exec();
+      return res.json(item);
+    }
   }),
 
   upload: asyncHandler(async (req, res) => {
@@ -52,18 +52,18 @@ const ItemController = {
 
     const images = req.files;
 
-    if (images.length === 0) {
+    if (!images || images.length === 0) {
       return res.status(400).json({
         msg: "No images uploaded!",
       });
     }
 
-    const item = await Item.findOne({ where: { id } });
+    const item = await Item.findByPk(id);
 
     if (!item) return res.status(404).json({ msg: "Item not found!" });
 
     const paths = images.map((image) => ({
-      itemId: item.id,
+      item_id: item.id,
       path: image.filename,
     }));
 
@@ -78,15 +78,17 @@ const ItemController = {
     const allowFields = [
       "name",
       "brandName",
-      "secondCategoryId",
-      "mainCategoryId",
-      "isFeature",
-      "isUniversal",
+      "second_category_id",
+      "main_category_id",
+      "is_feature",
+      "is_universal",
       "OE_NO",
       "price",
     ];
 
     const filteredBody = filterAllowFields(req.body, allowFields);
+
+    if (!filteredBody) return res.sendStatus(204);
 
     const [result] = await Item.update(filteredBody, { where: { id } });
 

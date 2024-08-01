@@ -1,12 +1,12 @@
 const { body, param } = require("express-validator");
 
 const validateOrderItem = [
-  body("itemId").notEmpty().isInt().withMessage("Item Id must be integer"),
+  body("item_id").notEmpty().isInt().withMessage("Item Id must be integer"),
   body("subprice")
     .notEmpty()
     .isInt()
     .withMessage("Subprice must be an integer"),
-  body("totalPrice")
+  body("totalprice")
     .notEmpty()
     .isInt()
     .withMessage("Total Price must be an integer"),

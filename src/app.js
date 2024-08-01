@@ -29,6 +29,11 @@ const { promotionsRouter } = require("./routers/promotions");
 const { ordersRouter } = require("./routers/orders");
 const { discountsRouter } = require("./routers/discounts");
 const { discountTypesRouter } = require("./routers/discountTypes");
+const { rolesRouter } = require("./routers/roles");
+const { permissionsRouter } = require("./routers/permissions");
+const { roleHasPermissionsRouter } = require("./routers/roleHasPermissions");
+const { slidersRouter } = require("./routers/slider");
+const { brandsRouter } = require("./routers/brands");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -36,8 +41,11 @@ app.use(cors());
 
 app.use(morgan("dev"));
 
-app.use(express.static("src/public"));
+app.use(express.static("src/public/images"));
 
+app.use("/api", rolesRouter);
+app.use("/api", permissionsRouter);
+app.use("/api", roleHasPermissionsRouter);
 app.use("/api", usersRouter);
 app.use("/api", companiesRouter);
 app.use("/api", seriesRouter);
@@ -58,6 +66,8 @@ app.use("/api", promotionsRouter);
 app.use("/api", ordersRouter);
 app.use("/api", discountTypesRouter);
 app.use("/api", discountsRouter);
+app.use("/api", slidersRouter);
+app.use("/api", brandsRouter);
 
 app.use(errorHandler);
 

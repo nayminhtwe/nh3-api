@@ -1,20 +1,21 @@
 const OrderStatus = require("../models/OrderStatus");
 
-module.exports = async (req, res) => {
+async function orderStautsSeed() {
   const orderStatuses = [
     {
       status: "Processing",
-      userId: 1,
+      user_id: 1,
     },
     {
       status: "Shipped",
-      userId: 2,
+      user_id: 2,
     },
   ];
 
   await OrderStatus.bulkCreate(orderStatuses);
-  console.log("Order statuses seeded successfully.");
+  console.log("order status seed successfully");
+}
 
-  await OrderStatus.bulkCreate(orderStatuses);
-  console.log("inserted order statuses");
-};
+orderStautsSeed();
+
+module.exports = orderStautsSeed;

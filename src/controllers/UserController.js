@@ -1,141 +1,199 @@
 require("dotenv").config();
-
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
-const jwt = require("jsonwebtoken");
-const generateAccessAndRefreshToken = require("../utils/generateAccessAndRefreshToken");
-const Role = require("../models/Role");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/generateTokens");
+const PersonalAccessToken = require("../models/PersonalAccessToken");
 
 const UserController = {
   verify: asyncHandler(async (req, res) => {
-    const user = req.user;
+    const { user } = req;
     return res.json(user);
   }),
 
   refresh: asyncHandler(async (req, res) => {
-    const { incomeRefreshToken } = req.body;
+    const { type, userId, refresh } = req.body;
 
-    if (!incomeRefreshToken) {
-      return res.status(400).json({
-        msg: "refreshToken required!",
-      });
+    // Validate input
+    if (!type || !userId || !refresh) {
+      return res
+        .status(400)
+        .json({ msg: "type, userId, and refresh token are required" });
     }
 
-    const user = await User.findOne({
-      where: { refreshToken: incomeRefreshToken },
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    // find refresh token in personal access token
+    const token = await PersonalAccessToken.findOne({
+      where: {
+        tokenableType: type,
+        tokenableId: userId,
+        name: "refreshToken",
+        token: refresh,
+      },
     });
 
-    if (!user) {
-      return res.status(401).json({
-        msg: "Invalid refreshToken!",
+    if (!token) return res.status(401).json({ msg: "Invalid refresh token" });
+
+    try {
+      jwt.verify(refresh, process.env.JWT_REFRESH_SECRET);
+
+      const newAccessToken = generateAccessToken({
+        id: user.id,
+        type: user.type,
+        name: user.name,
+        email: user.email,
       });
+
+      const newRefreshToken = generateRefreshToken({
+        id: user.id,
+      });
+
+      // update the refresh token
+      await PersonalAccessToken.update(
+        { token: newRefreshToken, lastUsedAt: new Date() },
+        {
+          where: {
+            tokenableType: type,
+            tokenableId: userId,
+            name: "refreshToken",
+            token: refresh,
+          },
+        }
+      );
+
+      return res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      });
+    } catch (error) {
+      return res.status(401).json({ msg: "Invalid refresh token" });
     }
-
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-      user.id
-    );
-
-    return res.json({ accessToken, refreshToken });
-  }),
-
-  find: asyncHandler(async (req, res) => {
-    const users = await User.findAll({ include: Role });
-    return res.json(users);
-  }),
-
-  show: asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const user = await User.findByPk(id);
-    return res.json(user);
   }),
 
   register: asyncHandler(async (req, res) => {
-    const { phone, email, password } = req.body;
+    const { name, email, password } = req.body;
 
-    const userExist = await User.findOne({ where: { email } });
+    const userExists = await User.findOne({ where: { email } });
 
-    if (userExist) {
-      return res.status(400).json({
-        msg: "User already exists!",
-      });
-    }
+    if (userExists)
+      return res.status(400).json({ msg: "User email already exists" });
 
-    const hash = await bcrypt.hash(password, 10);
-
-    const user = await User.create({ phone, email, password: hash });
+    const user = await User.create({
+      name,
+      email,
+      password: await bcrypt.hash(password, 10),
+    });
 
     return res.json(user);
   }),
 
   login: asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    const user = await User.findOne({
-      where: { email },
-      attributes: ["id", "email", "phone", "password"],
+    const user = await User.findOne({ where: { email } });
+
+    if (!user)
+      return res.status(404).json({ msg: "User not found. Register first" });
+
+    if (!(await bcrypt.compare(password, user.password))) {
+      return res.status(400).json({ msg: "Incorrect password" });
+    }
+
+    const accessToken = generateAccessToken({
+      id: user.id,
+      type: user.type,
+      name: user.name,
+      email: user.email,
     });
 
-    if (!user) {
-      return res.status(404).json({
-        msg: "User not found!",
+    const refreshToken = generateRefreshToken({
+      id: user.id,
+    });
+
+    // check the refresh token already has in personal access table to prevent the duplicate refresh token
+    const isUserHaveRefreshToken = await PersonalAccessToken.findOne({
+      where: {
+        tokenableType: user.type,
+        tokenableId: user.id,
+        name: "refreshToken",
+      },
+    });
+
+    if (isUserHaveRefreshToken) {
+      await PersonalAccessToken.destroy({
+        where: {
+          tokenableType: user.type,
+          tokenableId: user.id,
+          name: "refreshToken",
+        },
       });
     }
 
-    const comparePassword = await bcrypt.compare(password, user.password);
+    // store the refresh token in PAT table
+    await PersonalAccessToken.create({
+      tokenableType: "user",
+      tokenableId: user.id,
+      name: "refreshToken",
+      token: refreshToken,
+      abilities: "refresh",
+      lastUsedAt: new Date(),
+    });
 
-    if (!comparePassword) {
-      return res.status(400).json({
-        msg: "Incorrect password!",
-      });
-    }
-
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
-      user.id
-    );
-
-    return res.json({ user, accessToken, refreshToken });
-  }),
-
-  logout: asyncHandler(async (req, res) => {
-    const { authorization } = req.headers;
-    const token = authorization && authorization.split(" ")[1];
-
-    if (!token) {
-      return res.status(400).json({
-        msg: "Access token required!",
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-    const user = await User.findByPk(decoded.id);
-
-    user.accessToken = null;
-    user.refreshToken = null;
-
+    user.last_login_at = new Date();
     await user.save();
 
-    return res.status(200).json({
-      msg: "logout successfully!",
-    });
+    return res.json({ accessToken, refreshToken });
   }),
 
-  update: asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const { phone, email, password } = req.body;
+  // Find all users
+  find: asyncHandler(async (req, res) => {
+    const users = await User.findAll();
+    return res.json(users);
+  }),
 
-    await User.update({ phone, email, password }, { where: { id } });
+  // Change password
+  passwordChange: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { password } = req.body;
 
     const user = await User.findByPk(id);
-    return res.json(user);
+
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    if (!(await bcrypt.compare(password, user.password)))
+      return res.status(401).json({ msg: "Incorrect password" });
+
+    user.password = await bcrypt.hash(password, 10);
+    user.password_changed_at = new Date();
+    await user.save();
+
+    return res.json({ msg: "Password changed successfully" });
   }),
 
+  // Restore user from soft delete
+  restore: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const restore = await User.restore({ where: { id } });
+
+    if (!restore) return res.status(404).json({ msg: "User restore failed" });
+
+    return res.status(200).json({ msg: "User restored successfully" });
+  }),
+
+  // Soft delete user
   destroy: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const result = await User.destroy({ where: { id } });
 
     if (!result) {
       return res.status(400).json({
-        msg: "id already deleted!",
+        msg: "User already deleted or does not exist",
       });
     }
 
