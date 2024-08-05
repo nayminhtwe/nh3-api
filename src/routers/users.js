@@ -8,7 +8,6 @@ const {
   validateRegister,
   validateLogin,
   validateId,
-  validatePassword,
 } = require("../middlewares/validate");
 
 const validator = require("../utils/validator");
@@ -23,20 +22,14 @@ router.post("/refresh-token", UserController.refresh);
 
 router.get("/users", UserController.find);
 
-router.patch(
-  "/users/:id/change-password",
-  validateId,
-  validatePassword,
-  validator,
-  UserController.passwordChange
-);
-
 router.post(
   "/users/:id/restore",
   validateId,
   validator,
   UserController.restore
 );
+
+router.delete("/users/:id/refresh-token", UserController.revokeRefresh);
 
 router.delete("/users/:id", validateId, validator, UserController.destroy);
 

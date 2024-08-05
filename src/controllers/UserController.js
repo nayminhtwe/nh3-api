@@ -1,204 +1,93 @@
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const asyncHandler = require("express-async-handler");
-const {
-  generateAccessToken,
-  generateRefreshToken,
-} = require("../utils/generateTokens");
-const PersonalAccessToken = require("../models/PersonalAccessToken");
 
-const UserController = {
+const { generateAccessAndRefreshToken } = require("../utils/generateTokens");
+const UserResource = require("../resources/UserResource");
+
+module.exports = {
   verify: asyncHandler(async (req, res) => {
     const { user } = req;
     return res.json(user);
   }),
 
-  refresh: asyncHandler(async (req, res) => {
-    const { type, userId, refresh } = req.body;
-
-    // Validate input
-    if (!type || !userId || !refresh) {
-      return res
-        .status(400)
-        .json({ msg: "type, userId, and refresh token are required" });
-    }
-
-    const user = await User.findByPk(userId);
-    if (!user) return res.status(404).json({ msg: "User not found" });
-
-    // find refresh token in personal access token
-    const token = await PersonalAccessToken.findOne({
-      where: {
-        tokenableType: type,
-        tokenableId: userId,
-        name: "refreshToken",
-        token: refresh,
-      },
-    });
-
-    if (!token) return res.status(401).json({ msg: "Invalid refresh token" });
-
-    try {
-      jwt.verify(refresh, process.env.JWT_REFRESH_SECRET);
-
-      const newAccessToken = generateAccessToken({
-        id: user.id,
-        type: user.type,
-        name: user.name,
-        email: user.email,
-      });
-
-      const newRefreshToken = generateRefreshToken({
-        id: user.id,
-      });
-
-      // update the refresh token
-      await PersonalAccessToken.update(
-        { token: newRefreshToken, lastUsedAt: new Date() },
-        {
-          where: {
-            tokenableType: type,
-            tokenableId: userId,
-            name: "refreshToken",
-            token: refresh,
-          },
-        }
-      );
-
-      return res.json({
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-      });
-    } catch (error) {
-      return res.status(401).json({ msg: "Invalid refresh token" });
-    }
+  find: asyncHandler(async (req, res) => {
+    const users = await User.findAll();
+    return res.json(UserResource.collection(users));
   }),
 
   register: asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
+    const hash = await bcrypt.hash(password, 10);
 
-    const userExists = await User.findOne({ where: { email } });
-
-    if (userExists)
-      return res.status(400).json({ msg: "User email already exists" });
-
-    const user = await User.create({
-      name,
-      email,
-      password: await bcrypt.hash(password, 10),
-    });
-
-    return res.json(user);
+    const user = await User.create({ name, email, password: hash });
+    return res.status(201).json(new UserResource(user).exec());
   }),
 
   login: asyncHandler(async (req, res) => {
     const { email, password } = req.body;
+
     const user = await User.findOne({ where: { email } });
 
     if (!user)
-      return res.status(404).json({ msg: "User not found. Register first" });
-
-    if (!(await bcrypt.compare(password, user.password))) {
-      return res.status(400).json({ msg: "Incorrect password" });
-    }
-
-    const accessToken = generateAccessToken({
-      id: user.id,
-      type: user.type,
-      name: user.name,
-      email: user.email,
-    });
-
-    const refreshToken = generateRefreshToken({
-      id: user.id,
-    });
-
-    // check the refresh token already has in personal access table to prevent the duplicate refresh token
-    const isUserHaveRefreshToken = await PersonalAccessToken.findOne({
-      where: {
-        tokenableType: user.type,
-        tokenableId: user.id,
-        name: "refreshToken",
-      },
-    });
-
-    if (isUserHaveRefreshToken) {
-      await PersonalAccessToken.destroy({
-        where: {
-          tokenableType: user.type,
-          tokenableId: user.id,
-          name: "refreshToken",
-        },
-      });
-    }
-
-    // store the refresh token in PAT table
-    await PersonalAccessToken.create({
-      tokenableType: "user",
-      tokenableId: user.id,
-      name: "refreshToken",
-      token: refreshToken,
-      abilities: "refresh",
-      lastUsedAt: new Date(),
-    });
-
-    user.last_login_at = new Date();
-    await user.save();
-
-    return res.json({ accessToken, refreshToken });
-  }),
-
-  // Find all users
-  find: asyncHandler(async (req, res) => {
-    const users = await User.findAll();
-    return res.json(users);
-  }),
-
-  // Change password
-  passwordChange: asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const { password } = req.body;
-
-    const user = await User.findByPk(id);
-
-    if (!user) return res.status(404).json({ msg: "User not found" });
+      return res.status(400).json({ msg: "User not found. register first" });
 
     if (!(await bcrypt.compare(password, user.password)))
-      return res.status(401).json({ msg: "Incorrect password" });
+      return res.status(400).json({ msg: "Invalid password" });
 
-    user.password = await bcrypt.hash(password, 10);
-    user.password_changed_at = new Date();
+    const { access_token, refresh_token } = generateAccessAndRefreshToken(user);
+
+    user.refresh_token = refresh_token;
     await user.save();
 
-    return res.json({ msg: "Password changed successfully" });
+    return res.json({ access_token, refresh_token });
   }),
 
-  // Restore user from soft delete
+  refresh: asyncHandler(async (req, res) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken)
+      return res.status(401).json({ msg: "Refresh token is missing" });
+
+    const user = await User.findOne({ where: { refresh_token: refreshToken } });
+
+    if (!user) return res.status(401).json({ msg: "Invalid refresh token" });
+
+    const { access_token, refresh_token } = generateAccessAndRefreshToken(user);
+
+    user.refresh_token = refresh_token;
+    await user.save();
+
+    return res.json({ access_token, refresh_token });
+  }),
+
+  destroy: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const result = await User.destroy({ where: { id } });
+
+    if (!result) return res.status(400).json({ msg: "Failed delete user" });
+
+    return res.status(200).json({ msg: "User deleted successfully" });
+  }),
+
+  revokeRefresh: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const user = await User.findOne({ where: { id } });
+
+    if (!user) res.status(404).json({ msg: `User not found` });
+
+    user.refresh_token = null;
+    await user.save();
+
+    return res.json({ msg: "User revoke refresh token success" });
+  }),
+
   restore: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const restore = await User.restore({ where: { id } });
-
-    if (!restore) return res.status(404).json({ msg: "User restore failed" });
-
-    return res.status(200).json({ msg: "User restored successfully" });
-  }),
-
-  // Soft delete user
-  destroy: asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await User.destroy({ where: { id } });
-
-    if (!result) {
-      return res.status(400).json({
-        msg: "User already deleted or does not exist",
-      });
-    }
-
+    await User.restore({ where: { id } });
     return res.sendStatus(204);
   }),
 };
-
-module.exports = UserController;
