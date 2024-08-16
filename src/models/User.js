@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes, where } = require("sequelize");
 const sequelize = require("../config/db");
 const speakeasy = require("speakeasy");
 const bcrypt = require("bcrypt");
@@ -8,6 +8,7 @@ const Otp = require("./Otp");
 const { createError } = require("../utils/createError");
 const generateTranscationId = require("../utils/generateTranscationId");
 const { sendSMS } = require("../utils/sendSMS");
+const { generateAccessAndRefreshToken } = require("../utils/generateTokens");
 
 const User = sequelize.define(
   "app_user",
@@ -32,6 +33,11 @@ const User = sequelize.define(
     },
     refresh_token: {
       type: DataTypes.TEXT,
+    },
+    percentage: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {
@@ -66,7 +72,7 @@ User.generateOTP = async (phone_number) => {
   const transcation_id = generateTranscationId();
 
   // set the expire time for otp
-  const expires_at = new Date(Date.now() + 3 * 60 * 1000);
+  const expires_at = new Date(Date.now() + 5 * 60 * 1000);
 
   await Otp.create({
     phone_number,
@@ -121,7 +127,13 @@ User.register = async ({
     password: await bcrypt.hash(password, 10),
   });
 
-  return user;
+  const { access_token, refresh_token } = await generateAccessAndRefreshToken(
+    user
+  );
+
+  await user.update({ where: { refresh_token } });
+
+  return { user, access_token, refresh_token };
 };
 
 module.exports = User;

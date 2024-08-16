@@ -41,10 +41,20 @@ const validateId = [
   param("id").notEmpty().isInt({ min: 1 }).withMessage("Id must be integer"),
 ];
 
+const validatePercentage = [
+  param("id").notEmpty().isInt({ min: 1 }).withMessage("Id must be integer"),
+  body("percentage")
+    .notEmpty()
+    .withMessage("Percentage required")
+    .isInt({ min: 0, max: 100 })
+    .withMessage("Percentage must be between 1 and 100"),
+];
+
 module.exports = {
   validateLogin,
   validateRegister,
   validatePassword,
   validateId,
   validateOtp,
+  validatePercentage,
 };

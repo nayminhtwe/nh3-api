@@ -9,11 +9,14 @@ const {
   validateLogin,
   validateId,
   validateOtp,
+  validatePercentage,
 } = require("../middlewares/validate");
 
 const validator = require("../utils/validator");
 
 router.get("/verify", auth, UserController.verify);
+
+router.get("/users", UserController.find);
 
 router.post("/otp-request", validateOtp, validator, UserController.requestOtp);
 
@@ -23,13 +26,18 @@ router.post("/login", validateLogin, validator, UserController.login);
 
 router.post("/refresh-token", UserController.refresh);
 
-router.get("/users", UserController.find);
-
 router.post(
   "/users/:id/restore",
   validateId,
   validator,
   UserController.restore
+);
+
+router.patch(
+  "/users/:id/percentage",
+  validatePercentage,
+  validator,
+  UserController.setPercentage
 );
 
 router.delete("/users/:id/refresh-token", UserController.revokeRefresh);

@@ -32,8 +32,9 @@ module.exports = {
   }),
 
   register: asyncHandler(async (req, res) => {
-    const user = await User.register(req.body);
-    return res.status(201).json(new UserResource(user).exec());
+    const { user, access_token, refresh_token } = await User.register(req.body);
+
+    return res.status(201).json({ user, access_token, refresh_token });
   }),
 
   login: asyncHandler(async (req, res) => {
@@ -73,6 +74,20 @@ module.exports = {
     return res.json({ access_token, refresh_token });
   }),
 
+  setPercentage: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { percentage } = req.body;
+
+    const user = await User.findByPk(id);
+
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    user.percentage = percentage;
+    await user.save();
+
+    return res.json({ msg: "User percentage updated successfully" });
+  }),
+
   destroy: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -93,7 +108,7 @@ module.exports = {
     user.refresh_token = null;
     await user.save();
 
-    return res.json({ msg: "User revoke refresh token success" });
+    return res.json({ msg: "User revoke refresh token successfully" });
   }),
 
   restore: asyncHandler(async (req, res) => {

@@ -6,7 +6,6 @@ class UserResource extends Resource {
       id: this.id,
       name: this.name,
       phone_number: this.phone_number,
-      password: this.password,
       refresh_token: this.refresh_token,
       created_at: this.created_at,
       updated_at: this.updated_at,
