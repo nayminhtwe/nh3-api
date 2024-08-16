@@ -1,26 +1,52 @@
 const Item = require("../models/Item");
 const asyncHandler = require("express-async-handler");
 const MainCategory = require("../models/MainCategory");
-const SecondCategory = require("../models/SecondCategory");
 const filterAllowFields = require("../utils/filterAllowFields");
 const ItemImage = require("../models/ItemImage");
 const ItemResource = require("../resources/ItemResource");
 
-const includeFields = [SecondCategory, MainCategory, ItemImage];
+const includeFields = [MainCategory, ItemImage];
 
 const ItemController = {
   find: asyncHandler(async (req, res) => {
-    const items = await Item.findAll({
+    const limit = 10;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    const { count, rows: items } = await Item.findAndCountAll({
       include: includeFields,
+      limit,
+      offset,
     });
-    return res.json(ItemResource.collection(items));
+
+    const totalPages = Math.ceil(count / limit);
+    const nextPage = page < totalPages ? page + 1 : null;
+    const prevPage = page > 1 ? page - 1 : null;
+
+    const url = `${req.protocol}://${req.get("host")}${
+      req.originalUrl.split("?")[0]
+    }`;
+
+    return res.json(
+      ItemResource.collection({
+        meta: {
+          page,
+          totalItems: items.length,
+          totalPages,
+        },
+        links: {
+          next: `${url}?page=${nextPage}`,
+          previous: `${url}?page=${prevPage}`,
+        },
+        data: items,
+      })
+    );
   }),
 
   create: asyncHandler(async (req, res) => {
     const {
       name,
       brandName,
-      second_category_id,
       main_category_id,
       is_feature,
       is_universal,
@@ -33,7 +59,6 @@ const ItemController = {
     const result = await Item.create({
       name,
       brandName,
-      second_category_id,
       main_category_id,
       is_feature,
       is_universal,
@@ -78,7 +103,6 @@ const ItemController = {
     const allowFields = [
       "name",
       "brandName",
-      "second_category_id",
       "main_category_id",
       "is_feature",
       "is_universal",

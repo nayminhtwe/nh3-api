@@ -1,7 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const MainCategory = require("./MainCategory");
-const SecondCategory = require("./SecondCategory");
 
 const Item = sequelize.define(
   "item",
@@ -17,14 +16,6 @@ const Item = sequelize.define(
     },
     brandName: {
       type: DataTypes.STRING,
-    },
-    second_category_id: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      references: {
-        model: SecondCategory,
-        key: "id",
-      },
     },
     main_category_id: {
       type: DataTypes.BIGINT.UNSIGNED,
@@ -64,11 +55,6 @@ const Item = sequelize.define(
   },
   { timestamps: false }
 );
-
-Item.belongsTo(SecondCategory, {
-  foreignKey: "second_category_id",
-  onDelete: "CASCADE",
-});
 
 Item.belongsTo(MainCategory, {
   foreignKey: "main_category_id",

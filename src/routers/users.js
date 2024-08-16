@@ -8,11 +8,14 @@ const {
   validateRegister,
   validateLogin,
   validateId,
+  validateOtp,
 } = require("../middlewares/validate");
 
 const validator = require("../utils/validator");
 
 router.get("/verify", auth, UserController.verify);
+
+router.post("/otp-request", validateOtp, validator, UserController.requestOtp);
 
 router.post("/register", validateRegister, validator, UserController.register);
 

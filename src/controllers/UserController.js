@@ -1,9 +1,12 @@
+require("dotenv").config();
+
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-
 const { generateAccessAndRefreshToken } = require("../utils/generateTokens");
+
 const UserResource = require("../resources/UserResource");
+const Otp = require("../models/Otp");
 
 module.exports = {
   verify: asyncHandler(async (req, res) => {
@@ -16,18 +19,27 @@ module.exports = {
     return res.json(UserResource.collection(users));
   }),
 
-  register: asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
-    const hash = await bcrypt.hash(password, 10);
+  requestOtp: asyncHandler(async (req, res) => {
+    const { phone_number } = req.body;
 
-    const user = await User.create({ name, email, password: hash });
+    if (!phone_number) {
+      return res.status(400).json({ error: "Phone number is required" });
+    }
+
+    const { transcation_id } = await User.generateOTP(phone_number);
+
+    return res.json({ phone_number, transcation_id });
+  }),
+
+  register: asyncHandler(async (req, res) => {
+    const user = await User.register(req.body);
     return res.status(201).json(new UserResource(user).exec());
   }),
 
   login: asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { phone_number, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { phone_number } });
 
     if (!user)
       return res.status(400).json({ msg: "User not found. register first" });

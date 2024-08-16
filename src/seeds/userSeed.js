@@ -7,17 +7,18 @@ async function userSeed() {
   const users = [
     {
       name: "Kyaw Gyi",
-      email: "kyaw@gmail.com",
+      phone_number: "2123423",
       password: hash,
     },
     {
       name: "Mya Mya",
-      email: "mya@gmail.com",
+
+      phone_number: "94234324",
       password: hash,
     },
     {
       name: "Alice",
-      email: "alice@gmail.com",
+      phone_number: "47349837",
       password: hash,
     },
   ];

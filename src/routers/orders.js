@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/orders", OrderController.find);
 
+router.get("/orders/:id", OrderController.show);
+
 router.post("/orders", validateBody, validator, OrderController.create);
 
 router.put("/orders/:id", validateId, validator, OrderController.update);

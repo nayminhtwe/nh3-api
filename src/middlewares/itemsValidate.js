@@ -7,10 +7,6 @@ const validateBody = [
   body("name").notEmpty().isString().isLength({ max: 255 }),
   body("brandName").notEmpty().isString().isLength({ max: 255 }),
 
-  body("second_category_id")
-    .notEmpty()
-    .isInt()
-    .withMessage("second_category_id must be integer"),
   body("main_category_id")
     .notEmpty()
     .isInt()
@@ -20,6 +16,7 @@ const validateBody = [
     .optional()
     .isBoolean()
     .withMessage("isFeature must be boolean"),
+
   body("is_universal")
     .optional()
     .isBoolean()

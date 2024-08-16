@@ -1,14 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const Car = require("../models/Car");
 const Company = require("../models/Company");
-const Series = require("../models/Series");
 const CarModel = require("../models/CarModel");
 const Year = require("../models/Year");
 const Engine = require("../models/Engine");
 const filterAllowFields = require("../utils/filterAllowFields");
 const CarResource = require("../resources/CarResource");
 
-const includeFields = [Company, Series, CarModel, Year, Engine];
+const includeFields = [Company, CarModel, Year, Engine];
 
 const CarController = {
   find: asyncHandler(async (req, res) => {
@@ -20,12 +19,10 @@ const CarController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { company_id, series_id, model_id, year_id, engine_id, description } =
-      req.body;
+    const { company_id, model_id, year_id, engine_id, description } = req.body;
 
     const result = await Car.create({
       company_id,
-      series_id,
       model_id,
       year_id,
       engine_id,
@@ -47,14 +44,11 @@ const CarController = {
 
     const allowFields = [
       "company_id",
-      "series_id",
       "model_id",
       "year_id",
       "engine_id",
       "description",
     ];
-
-    console.log(req.body);
 
     const filteredBody = filterAllowFields(req.body, allowFields);
 

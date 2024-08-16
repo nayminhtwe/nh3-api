@@ -5,7 +5,7 @@ const validateId = [
 ];
 
 const validateBody = [
-  body("series_id").notEmpty().isInt().withMessage("Id must be integer"),
+  body("company_id").notEmpty().isInt().withMessage("Id must be integer"),
   body("year").notEmpty().isInt().withMessage("Id must be integer"),
 ];
 

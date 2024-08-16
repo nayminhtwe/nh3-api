@@ -1,25 +1,24 @@
 const asyncHandler = require("express-async-handler");
 const Year = require("../models/Year");
-const Series = require("../models/Series");
 const filterAllowFields = require("../utils/filterAllowFields");
 const YearResource = require("../resources/YearResource");
-const { where } = require("sequelize");
+const Company = require("../models/Company");
 
 const YearController = {
   find: asyncHandler(async (req, res) => {
-    const years = await Year.findAll({ include: Series });
+    const years = await Year.findAll({ include: Company });
     console.log(years);
     return res.json(YearResource.collection(years));
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { series_id, year } = req.body;
+    const { company_id, year } = req.body;
 
-    const result = await Year.create({ series_id, year });
+    const result = await Year.create({ company_id, year });
 
     const data = await Year.findOne({
       where: { id: result.id },
-      include: Series,
+      include: Company,
     });
 
     return res.json(new YearResource(data).exec());
@@ -28,14 +27,14 @@ const YearController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const allowFields = ["series_id", "year"];
+    const allowFields = ["company_id", "year"];
     const bodyFiltered = filterAllowFields(req.body, allowFields);
 
     const [result] = await Year.update(bodyFiltered, { where: { id } });
 
     if (!result) return res.status(400).json({ msg: "update failed!" });
 
-    const updateData = await Year.findOne({ where: { id }, include: Series });
+    const updateData = await Year.findOne({ where: { id } });
 
     return res.json(new YearResource(updateData).exec());
   }),

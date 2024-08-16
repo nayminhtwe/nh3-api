@@ -5,7 +5,7 @@ class UserResource extends Resource {
     return {
       id: this.id,
       name: this.name,
-      email: this.email,
+      phone_number: this.phone_number,
       password: this.password,
       refresh_token: this.refresh_token,
       created_at: this.created_at,

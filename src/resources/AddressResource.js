@@ -13,10 +13,10 @@ class AddressResource extends Resoucre {
       street: this.street,
       created_at: this.created_at,
       updated_at: this.updated_at,
-      user: this.user
+      user: this.app_user
         ? {
-            id: this.user.id,
-            name: this.user.name,
+            id: this.app_user.id,
+            name: this.app_user.name,
           }
         : null,
     };

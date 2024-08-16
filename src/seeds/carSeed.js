@@ -4,7 +4,6 @@ async function carSeed() {
   const cars = [
     {
       company_id: 1,
-      series_id: 1,
       model_id: 1,
       year_id: 1,
       engine_id: 1,
@@ -12,7 +11,6 @@ async function carSeed() {
     },
     {
       company_id: 2,
-      series_id: 2,
       model_id: 1,
       year_id: 2,
       engine_id: 2,
@@ -20,7 +18,6 @@ async function carSeed() {
     },
     {
       company_id: 3,
-      series_id: 3,
       model_id: 1,
       year_id: 3,
       engine_id: 3,
@@ -28,7 +25,6 @@ async function carSeed() {
     },
     {
       company_id: 4,
-      series_id: 4,
       model_id: 2,
       year_id: 4,
       engine_id: 4,
@@ -36,7 +32,6 @@ async function carSeed() {
     },
     {
       company_id: 5,
-      series_id: 5,
       model_id: 3,
       year_id: 5,
       engine_id: 5,

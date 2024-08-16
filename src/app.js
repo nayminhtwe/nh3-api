@@ -17,7 +17,6 @@ const { carModelsRouter } = require("./routers/carModels");
 const { yearsRouter } = require("./routers/years");
 const { carsRouter } = require("./routers/cars");
 const { mainCategoriesRouter } = require("./routers/mainCategories");
-const { secondCategoriesRouter } = require("./routers/secondCategories");
 const { itemsRouter } = require("./routers/items");
 const { carItemsRouter } = require("./routers/carItems");
 const { itemImagesRouter } = require("./routers/itemImages");
@@ -34,6 +33,16 @@ const { permissionsRouter } = require("./routers/permissions");
 const { roleHasPermissionsRouter } = require("./routers/roleHasPermissions");
 const { slidersRouter } = require("./routers/slider");
 const { brandsRouter } = require("./routers/brands");
+
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  limit: 60,
+  message: "Too many requeset. Please try again a minute later.",
+});
+
+app.use(limiter);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -54,7 +63,6 @@ app.use("/api", yearsRouter);
 app.use("/api", enginesRouter);
 app.use("/api", carsRouter);
 app.use("/api", mainCategoriesRouter);
-app.use("/api", secondCategoriesRouter);
 app.use("/api", itemsRouter);
 app.use("/api", carItemsRouter);
 app.use("/api", itemImagesRouter);

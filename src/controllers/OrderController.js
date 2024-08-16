@@ -9,19 +9,19 @@ const Item = require("../models/Item");
 const User = require("../models/User");
 const filterAllowFields = require("../utils/filterAllowFields");
 
-const orderIncludes = [
-  { model: Cart },
-  { model: OrderStatus },
-  { model: Promotion },
-  { model: Item },
-  { model: Address },
-  { model: User },
-];
+const orderIncludes = [Cart, OrderStatus, Promotion, Item, Address, User];
 
 const OrderController = {
   find: asyncHandler(async (req, res) => {
     const orders = await Order.findAll({ include: orderIncludes });
     return res.json(OrderResource.collection(orders));
+  }),
+
+  show: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const order = await Order.findByPk(id, { include: User });
+
+    return res.json(order);
   }),
 
   create: asyncHandler(async (req, res) => {

@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-const Series = require("./Series");
+const Company = require("./Company");
 
 const Year = sequelize.define(
   "year",
@@ -10,11 +10,11 @@ const Year = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    series_id: {
+    company_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       references: {
-        model: Series,
+        model: Company,
         key: "id",
       },
     },
@@ -36,6 +36,7 @@ const Year = sequelize.define(
   { timestamps: false }
 );
 
-Year.belongsTo(Series, { foreignKey: "series_id", onDelete: "CASCADE" });
+Year.belongsTo(Company, { foreignKey: "company_id", onDelete: "CASCADE" });
+Company.hasMany(Year, { foreignKey: "company_id", onDelete: "CASCADE" });
 
 module.exports = Year;

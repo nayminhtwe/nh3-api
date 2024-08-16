@@ -62,12 +62,12 @@ class OrderResource extends Resource {
             price: this.item.price,
           }
         : null,
-      user: this.user
+      user: this.app_user
         ? {
-            id: this.user.id,
-            name: this.user.name,
-            email: this.user.email,
-            status: this.user.status,
+            id: this.app_user.id,
+            name: this.app_user.name,
+            email: this.app_user.email,
+            status: this.app_user.status,
           }
         : null,
     };

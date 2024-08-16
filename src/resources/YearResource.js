@@ -4,16 +4,16 @@ class YearResource extends Resource {
   toArray() {
     return {
       id: this.id,
-      series_id: this.series_id,
+      company_id: this.company_id,
       year: this.year,
       created_at: this.created_at,
       updated_at: this.updated_at,
-      serie: this.serie
+      company: this.company
         ? {
-            id: this.serie.id,
-            name: this.serie.name,
-            created_at: this.serie.created_at,
-            updated_at: this.serie.updated_at,
+            id: this.company.id,
+            name: this.company.name,
+            created_at: this.company.created_at,
+            updated_at: this.company.updated_at,
           }
         : null,
     };
