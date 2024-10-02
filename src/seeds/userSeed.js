@@ -12,7 +12,6 @@ async function userSeed() {
     },
     {
       name: "Mya Mya",
-
       phone_number: "94234324",
       password: hash,
     },

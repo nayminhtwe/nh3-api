@@ -4,11 +4,9 @@ async function orderStautsSeed() {
   const orderStatuses = [
     {
       status: "Processing",
-      user_id: 1,
     },
     {
       status: "Shipped",
-      user_id: 2,
     },
   ];
 

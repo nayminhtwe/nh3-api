@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 module.exports = {
   generateAccessAndRefreshToken: (user) => {
     const access_token = jwt.sign(
-      { id: user.id, name: user.name, email: user.email },
+      { id: user.id, name: user.name, percentage: user.percentage },
       process.env.JWT_ACCESS_SECRET,
       { expiresIn: process.env.JWT_ACCESS_EXPIRE }
     );

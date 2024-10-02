@@ -7,8 +7,8 @@ const validateId = [
 const validateBody = [
   body("enginepower")
     .notEmpty()
-    .isFloat()
-    .withMessage("Engine power must be float."),
+    .isString()
+    .withMessage("Engine power must be a string."),
 ];
 
 module.exports = {

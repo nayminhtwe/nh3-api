@@ -4,11 +4,14 @@ const MainCategory = require("../models/MainCategory");
 const filterAllowFields = require("../utils/filterAllowFields");
 const ItemImage = require("../models/ItemImage");
 const ItemResource = require("../resources/ItemResource");
+const { Sequelize } = require("sequelize");
 
 const includeFields = [MainCategory, ItemImage];
 
 const ItemController = {
   find: asyncHandler(async (req, res) => {
+    const { user } = req;
+
     const limit = 10;
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
@@ -17,6 +20,16 @@ const ItemController = {
       include: includeFields,
       limit,
       offset,
+      attributes: [
+        "id",
+        "name",
+        "brandName",
+        "main_category_id",
+        "is_feature",
+        "is_universal",
+        "OE_NO",
+        [Sequelize.literal(`price / ${user.percentage}`), "price"],
+      ],
     });
 
     const totalPages = Math.ceil(count / limit);
@@ -51,10 +64,12 @@ const ItemController = {
       is_feature,
       is_universal,
       OE_NO,
+      quantity,
+      status_id,
+      LKB_No,
+      description,
       price,
     } = req.body;
-
-    console.log(req.body);
 
     const result = await Item.create({
       name,
@@ -63,6 +78,10 @@ const ItemController = {
       is_feature,
       is_universal,
       OE_NO,
+      quantity,
+      status_id,
+      LKB_No,
+      description,
       price,
     });
 

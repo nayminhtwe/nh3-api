@@ -5,8 +5,6 @@ const validateId = [
 ];
 
 const validateBody = [
-  body("item_id").notEmpty().isInt().withMessage("itemId must be integer"),
-  body("OE_NO").notEmpty().isString().withMessage("OE_NO must be string"),
   body("quantity").notEmpty().isInt().withMessage("quantity must be integer"),
 ];
 

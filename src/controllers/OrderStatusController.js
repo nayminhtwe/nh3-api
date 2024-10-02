@@ -1,28 +1,23 @@
 const OrderStatus = require("../models/OrderStatus");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
-const filterAllowFields = require("../utils/filterAllowFields");
 const OrderStatusResource = require("../resources/OrderStatusResource");
-
-const includeFields = [User];
 
 const OrderStatusController = {
   find: asyncHandler(async (req, res) => {
-    const orderStatuses = await OrderStatus.findAll({ include: includeFields });
+    const orderStatuses = await OrderStatus.findAll();
     return res.json(OrderStatusResource.collection(orderStatuses));
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { status, user_id } = req.body;
+    const { status } = req.body;
 
     const result = await OrderStatus.create({
       status,
-      user_id,
     });
 
     const orderStatus = await OrderStatus.findOne({
       where: { id: result.id },
-      include: includeFields,
     });
 
     return res.status(201).json(new OrderStatusResource(orderStatus).exec());
@@ -30,28 +25,28 @@ const OrderStatusController = {
 
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const { status } = req.body;
 
-    const allowFields = ["status", "user_id"];
-    const filteredBody = filterAllowFields(req.body, allowFields);
+    const orderStatus = await OrderStatus.findByPk(id);
 
-    const [update] = await OrderStatus.update(filteredBody, { where: { id } });
+    if (!orderStatus) {
+      return res.status(404).json({ msg: "Order status not found" });
+    }
 
-    if (!update) return res.status(400).json({ msg: "Update failed!" });
+    const result = await orderStatus.update({ status });
 
-    const updatedOrderStatus = await OrderStatus.findOne({
-      where: { id },
-      include: includeFields,
-    });
-
-    return res.json(new OrderStatusResource(updatedOrderStatus).exec());
+    return res.json({ msg: "Updated success" });
   }),
 
   destroy: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const result = await OrderStatus.destroy({ where: { id } });
+    const orderStatus = await OrderStatus.findByPk(id);
 
-    if (!result) return res.status(400).json({ msg: `OrderStatus not found!` });
+    if (!orderStatus)
+      return res.status(404).json({ msg: "Order status not found" });
+
+    await orderStatus.destroy();
 
     return res.sendStatus(204);
   }),

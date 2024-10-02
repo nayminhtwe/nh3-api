@@ -14,12 +14,10 @@ class DiscountResource extends Resource {
       updated_at: this.updated_at,
       item: this.item ? this.tranformItem(this.item) : null,
 
-      discountType: this.DiscountType
+      discount_type: this.discount_type
         ? {
-            id: this.DiscountType.id,
-            type: this.DiscountType.type,
-            created_at: this.DiscountType.created_at,
-            updated_at: this.DiscountType.updated_at,
+            id: this.discount_type.id,
+            type: this.discount_type.type,
           }
         : null,
     };
@@ -30,14 +28,6 @@ class DiscountResource extends Resource {
       id: item.id,
       name: item.name,
       brandName: item.brandName,
-      secondCategoryId: item.secondCategoryId,
-      mainCategoryId: item.mainCategoryId,
-      isFeature: item.isFeature,
-      isUniversal: item.isUniversal,
-      OE_NO: item.OE_NO,
-      price: item.price,
-      created_at: item.created_at,
-      updated_at: item.updated_at,
     };
   }
 }

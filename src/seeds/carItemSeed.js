@@ -3,15 +3,15 @@ const CarItem = require("../models/CarItem");
 async function carItemSeed() {
   const carItems = [
     {
-      item_id: 1,
+      item_id: 13,
       car_id: 1,
     },
     {
-      item_id: 2,
+      item_id: 16,
       car_id: 2,
     },
     {
-      item_id: 3,
+      item_id: 15,
       car_id: 3,
     },
   ];
@@ -21,4 +21,5 @@ async function carItemSeed() {
 }
 
 carItemSeed();
+
 module.exports = carItemSeed;

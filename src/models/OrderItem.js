@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const Item = require("./Item");
+const Order = require("./Order");
 
 const OrderItem = sequelize.define(
   "order_item",
@@ -18,25 +19,25 @@ const OrderItem = sequelize.define(
         key: "id",
       },
     },
+    order_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: Order,
+        key: "id",
+      },
+    },
     subprice: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     totalprice: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     quantity: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-    },
-    deliveryfees: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-    },
-    note: {
-      type: DataTypes.STRING,
-      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,

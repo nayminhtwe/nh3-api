@@ -11,7 +11,7 @@ const { sendSMS } = require("../utils/sendSMS");
 const { generateAccessAndRefreshToken } = require("../utils/generateTokens");
 
 const User = sequelize.define(
-  "app_user",
+  "app_users",
   {
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
@@ -82,10 +82,7 @@ User.generateOTP = async (phone_number) => {
     expires_at,
   });
 
-  // send sms
-  await sendSMS(phone_number, otp_code, "L.K.B.NH3");
-
-  return { transcation_id };
+  return { transcation_id, otp_code };
 };
 
 User.register = async ({

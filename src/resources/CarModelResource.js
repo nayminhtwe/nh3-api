@@ -12,8 +12,6 @@ class CarModelResource extends Resource {
         ? {
             id: this.company.id,
             name: this.company.name,
-            created_at: this.company.created_at,
-            updated_at: this.company.updated_at,
           }
         : null,
     };

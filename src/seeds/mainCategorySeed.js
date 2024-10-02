@@ -7,6 +7,8 @@ async function mainCategorySeed() {
     { name: "Performance Parts" },
     { name: "Replacement Parts" },
     { name: "Tools & Equipment" },
+    { name: "Car Care Products" },
+    { name: "Lighting & Electrical" },
   ];
 
   await MainCategory.bulkCreate(mainCategorySamples);

@@ -13,6 +13,4 @@ async function yearSeed() {
   console.log("Inserted years");
 }
 
-yearSeed();
-
 module.exports = yearSeed;

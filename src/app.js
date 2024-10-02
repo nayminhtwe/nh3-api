@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
@@ -34,12 +32,15 @@ const { roleHasPermissionsRouter } = require("./routers/roleHasPermissions");
 const { slidersRouter } = require("./routers/slider");
 const { brandsRouter } = require("./routers/brands");
 
+const auth = require("./middlewares/auth");
 const rateLimit = require("express-rate-limit");
+const { cartItemsRouter } = require("./routers/cartItems");
+const { statusesRouter } = require("./routers/statuses");
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   limit: 60,
-  message: "Too many requeset. Please try again a minute later.",
+  message: "Too many requests. Please try again a minute later.",
 });
 
 app.use(limiter);
@@ -52,6 +53,7 @@ app.use(morgan("dev"));
 
 app.use(express.static("src/public/images"));
 
+// Apply routers
 app.use("/api", rolesRouter);
 app.use("/api", permissionsRouter);
 app.use("/api", roleHasPermissionsRouter);
@@ -63,13 +65,18 @@ app.use("/api", yearsRouter);
 app.use("/api", enginesRouter);
 app.use("/api", carsRouter);
 app.use("/api", mainCategoriesRouter);
-app.use("/api", itemsRouter);
+
+app.use("/api/items", auth);
+app.use("/api", itemsRouter); // Auth middleware
+app.use("/api", statusesRouter); // Auth middleware
+
 app.use("/api", carItemsRouter);
 app.use("/api", itemImagesRouter);
 app.use("/api", addressesRouter);
 app.use("/api", orderStatusesRouter);
 app.use("/api", orderItemsRouter);
 app.use("/api", cartsRouter);
+app.use("/api", cartItemsRouter);
 app.use("/api", promotionsRouter);
 app.use("/api", ordersRouter);
 app.use("/api", discountTypesRouter);

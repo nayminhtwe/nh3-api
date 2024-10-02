@@ -1,6 +1,6 @@
 const Company = require("../models/Company");
 
-module.exports = async function () {
+async function companySeed() {
   const companies = [
     { name: "Toyota" },
     { name: "Honda" },
@@ -11,4 +11,8 @@ module.exports = async function () {
 
   await Company.bulkCreate(companies);
   console.log("Inserted companies");
-};
+}
+
+companySeed();
+
+module.exports = companySeed;

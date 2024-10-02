@@ -8,7 +8,6 @@ class OrderResource extends Resource {
       address_id: this.address_id,
       order_status_id: this.order_status_id,
       promotion_id: this.promotion_id,
-      item_id: this.item_id,
       user_id: this.user_id,
       quantity: this.quantity,
       deliveryfees: this.deliveryfees,
@@ -47,19 +46,6 @@ class OrderResource extends Resource {
             id: this.promotion.id,
             OE_NO: this.promotion.OE_NO,
             type: this.promotion.type,
-          }
-        : null,
-      item: this.item
-        ? {
-            id: this.item.id,
-            name: this.item.name,
-            brandName: this.item.brandName,
-            second_category_id: this.item.second_category_id,
-            main_category_id: this.item.main_category_id,
-            is_feature: this.item.is_feature,
-            is_universal: this.item.is_universal,
-            OE_NO: this.item.OE_NO,
-            price: this.item.price,
           }
         : null,
       user: this.app_user

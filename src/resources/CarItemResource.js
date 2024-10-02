@@ -4,16 +4,14 @@ class CarItemResource extends Resource {
   toArray() {
     return {
       id: Number(this.id),
-      itemId: this.itemId,
-      carId: this.carId,
+      item_id: this.item_id,
+      car_id: this.car_id,
       created_at: this.created_at,
       updated_at: this.updated_at,
       item: this.item
         ? {
             id: this.item.id,
             name: this.item.name,
-            created_at: this.item.created_at,
-            updated_at: this.item.updated_at,
           }
         : null,
       car: this.car
@@ -25,8 +23,6 @@ class CarItemResource extends Resource {
             year_id: this.car.year_id,
             engine_id: this.car.engine_id,
             description: this.car.description,
-            created_at: this.car.created_at,
-            updated_at: this.car.updated_at,
           }
         : null,
     };

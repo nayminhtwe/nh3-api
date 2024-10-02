@@ -15,6 +15,6 @@ async function brandSeed() {
   console.log("brands seeding success");
 }
 
-brandSeed();
+// brandSeed();
 
 module.exports = brandSeed;

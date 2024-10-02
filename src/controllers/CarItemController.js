@@ -29,21 +29,19 @@ const CarItemController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
+    const carItem = await CarItem.findByPk(id);
+
+    if (!carItem) {
+      return res.status(404).json({ msg: "Car item not found" });
+    }
+
     const allowFields = ["item_id", "car_id"];
 
     const filteredBody = filterAllowFields(req.body, allowFields);
 
-    const [result] = await CarItem.update(filteredBody, { where: { id } });
+    await carItem.update(filteredBody);
 
-    if (!result)
-      return res.status(400).json({ msg: "update failed! && check your id!" });
-
-    const updateData = await CarItem.findOne({
-      where: { id },
-      include: includeFields,
-    });
-
-    return res.json(new CarItemResource(updateData).exec());
+    return res.json({ msg: "Car item updated successfully" });
   }),
 
   destroy: asyncHandler(async (req, res) => {

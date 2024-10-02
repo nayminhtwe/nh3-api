@@ -11,16 +11,15 @@ const OrderItemController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { item_id, subprice, totalprice, quantity, deliveryfees, note } =
-      req.body;
+    const { item_id, order_id, subprice, totalprice, quantity } = req.body;
 
     const result = await OrderItem.create({
       item_id,
+      order_id,
       subprice,
       totalprice,
       quantity,
-      deliveryfees,
-      note,
+      order_id,
     });
 
     const orderItem = await OrderItem.findOne({
@@ -34,22 +33,14 @@ const OrderItemController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const allowFields = [
-      "item_id",
-      "subprice",
-      "totalprice",
-      "quantity",
-      "deliveryfees",
-      "note",
-    ];
-    const filteredBody = filterAllowFields(req.body, allowFields);
+    const orderItem = await OrderItem.findByPk(id);
 
-    const [update] = await OrderItem.update(filteredBody, { where: { id } });
+    if (!orderItem)
+      return res.status(404).json({ msg: "Order item not found" });
 
-    if (!update) return res.status(400).json({ msg: "Update failed" });
+    await orderItem.update(req.body);
 
-    const updatedOrderItem = await OrderItem.findOne({ where: { id } });
-    return res.json(updatedOrderItem);
+    return res.json({ msg: "Update success" });
   }),
 
   destroy: asyncHandler(async (req, res) => {

@@ -10,7 +10,7 @@ const Engine = sequelize.define(
       primaryKey: true,
     },
     enginepower: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     created_at: {

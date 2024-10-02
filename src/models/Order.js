@@ -4,7 +4,6 @@ const Cart = require("./Cart");
 const Address = require("./Address");
 const OrderStatus = require("./OrderStatus");
 const Promotion = require("./Promotion");
-const Item = require("./Item");
 
 const User = require("./User");
 
@@ -15,14 +14,6 @@ const Order = sequelize.define(
       type: DataTypes.BIGINT.UNSIGNED,
       autoIncrement: true,
       primaryKey: true,
-    },
-    cart_id: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      references: {
-        model: Cart,
-        key: "id",
-      },
     },
     address_id: {
       type: DataTypes.BIGINT.UNSIGNED,
@@ -47,15 +38,7 @@ const Order = sequelize.define(
         key: "id",
       },
     },
-    item_id: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      references: {
-        model: Item,
-        key: "id",
-      },
-    },
-    user_id: {
+    app_user_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -89,14 +72,13 @@ const Order = sequelize.define(
   { timestamps: false }
 );
 
-Order.belongsTo(Cart, { foreignKey: "cart_id", onDelete: "CASCADE" });
 Order.belongsTo(Address, { foreignKey: "address_id", onDelete: "CASCADE" });
 Order.belongsTo(OrderStatus, {
   foreignKey: "orderstatus_id",
   onDelete: "CASCADE",
 });
 Order.belongsTo(Promotion, { foreignKey: "promotion_id", onDelete: "CASCADE" });
-Order.belongsTo(Item, { foreignKey: "item_id", onDelete: "CASCADE" });
-Order.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
+
+Order.belongsTo(User, { foreignKey: "app_user_id", onDelete: "CASCADE" });
 
 module.exports = Order;

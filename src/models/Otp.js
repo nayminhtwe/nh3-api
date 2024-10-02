@@ -19,7 +19,7 @@ const Otp = sequelize.define(
       allowNull: false,
     },
     transcation_id: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING(191),
       allowNull: false,
       unique: true,
     },

@@ -1,55 +1,52 @@
 const Cart = require("../models/Cart");
 const asyncHandler = require("express-async-handler");
-const filterAllowFields = require("../utils/filterAllowFields");
-const Item = require("../models/Item");
 const CartResource = require("../resources/CartResource");
+const CartItem = require("../models/CartItem");
 
 const CartController = {
   find: asyncHandler(async (req, res) => {
-    const carts = await Cart.findAll({ include: Item });
+    const carts = await Cart.findAll();
     return res.json(CartResource.collection(carts));
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { item_id, OE_NO, quantity } = req.body;
+    const { quantity } = req.body;
 
-    const result = await Cart.create({
-      item_id,
-      OE_NO,
-      quantity,
-    });
-
-    const cart = await Cart.findOne({
-      where: { id: result.id },
-      include: Item,
-    });
-
-    return res.status(201).json(new CartResource(cart).exec());
+    const cart = await Cart.create({ quantity });
+    return res.json(new CartResource(cart).exec());
   }),
 
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const { quantity } = req.body;
 
-    const allowFields = ["item_id", "OE_NO", "quantity"];
-    const filteredBody = filterAllowFields(req.body, allowFields);
+    // Find the cart by primary key
+    const cart = await Cart.findByPk(id);
 
-    const [update] = await Cart.update(filteredBody, { where: { id } });
+    if (!cart) {
+      return res.status(404).json({ msg: "Cart not found" });
+    }
 
-    if (!update) return res.status(400).json({ msg: "Update failed" });
+    // Update the cart and check the number of affected rows
+    const [affectedRows] = await Cart.update({ quantity }, { where: { id } });
 
-    const updatedCart = await Cart.findOne({ where: { id }, include: Item });
-    return res.json(new CartResource(updatedCart).exec());
+    // If no rows were affected, return a failure message
+    if (affectedRows === 0) {
+      return res.status(400).json({ msg: "Update failed, no changes made" });
+    }
+
+    return res.json({ msg: "Updated cart successfully" });
   }),
 
   destroy: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const result = await Cart.destroy({ where: { id } });
+    const cart = await Cart.findByPk(id);
 
-    if (!result)
-      return res.status(400).json({ msg: `Cart with id ${id} not found!` });
+    if (!cart) return res.status(404).json({ msg: "Cart not found" });
+    await cart.destroy();
 
-    return res.sendStatus(204);
+    return res.json({ msg: "Deleted cart successfully" });
   }),
 };
 

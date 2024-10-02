@@ -29,13 +29,9 @@ const Car = sequelize.define(
         key: "id",
       },
     },
-    year_id: {
-      type: DataTypes.BIGINT.UNSIGNED,
+    year: {
+      type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        model: Year,
-        key: "id",
-      },
     },
     engine_id: {
       type: DataTypes.BIGINT.UNSIGNED,
@@ -44,9 +40,6 @@ const Car = sequelize.define(
         model: Engine,
         key: "id",
       },
-    },
-    description: {
-      type: DataTypes.TEXT,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -64,7 +57,6 @@ const Car = sequelize.define(
 
 Car.belongsTo(Company, { foreignKey: "company_id", onDelete: "CASCADE" });
 Car.belongsTo(CarModel, { foreignKey: "model_id", onDelete: "CASCADE" });
-Car.belongsTo(Year, { foreignKey: "year_id", onDelete: "CASCADE" });
 Car.belongsTo(Engine, { foreignKey: "engine_id", onDelete: "CASCADE" });
 
 module.exports = Car;

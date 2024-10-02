@@ -17,11 +17,17 @@ const EngineController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
+    console.log("id: ", id);
+
     const { enginepower } = req.body;
 
-    const [result] = await Engine.update({ enginepower }, { where: { id } });
+    const engine = await Engine.findByPk(id);
 
-    if (!result) return res.status(400).json({ msg: "update failed!" });
+    if (!engine) {
+      return res.status(404).json({ msg: "Engine power not found" });
+    }
+
+    await engine.update({ enginepower });
 
     const updateData = await Engine.findOne({ where: { id } });
     return res.json(updateData);

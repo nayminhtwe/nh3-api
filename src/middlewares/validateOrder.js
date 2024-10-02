@@ -9,11 +9,6 @@ const validateId = [
 ];
 
 const validateBody = [
-  body("cart_id")
-    .notEmpty()
-    .withMessage("Cart _id is required")
-    .isInt()
-    .withMessage("Cart _id must be an integer"),
   body("address_id")
     .notEmpty()
     .withMessage("Address _id is required")
@@ -28,12 +23,7 @@ const validateBody = [
     .optional()
     .isInt()
     .withMessage("Promotion _id must be an integer"),
-  body("item_id")
-    .notEmpty()
-    .withMessage("Item _id is required")
-    .isInt()
-    .withMessage("Item _id must be an integer"),
-  body("user_id")
+  body("app_user_id")
     .notEmpty()
     .withMessage("User ID is required")
     .isInt()

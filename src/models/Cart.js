@@ -10,20 +10,8 @@ const Cart = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    item_id: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      references: {
-        model: Item,
-        key: "id",
-      },
-    },
-    OE_NO: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     quantity: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     created_at: {
@@ -39,7 +27,5 @@ const Cart = sequelize.define(
   },
   { timestamps: false }
 );
-
-Cart.belongsTo(Item, { foreignKey: "item_id", onDelete: "CASCADE" });
 
 module.exports = Cart;

@@ -1,6 +1,6 @@
 const DiscountType = require("../models/DiscountType");
 
-module.exports = async (req, res) => {
+async function discountTypeSeed(req, res) {
   const discountTypes = [
     { type: "Percentage" },
     { type: "Buy One Get One Free" },
@@ -9,4 +9,8 @@ module.exports = async (req, res) => {
 
   await DiscountType.bulkCreate(discountTypes);
   console.log("Inserted discount types");
-};
+}
+
+discountTypeSeed();
+
+module.exports = discountTypeSeed;

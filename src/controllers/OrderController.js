@@ -1,15 +1,12 @@
 const asyncHandler = require("express-async-handler");
 const Order = require("../models/Order");
 const OrderResource = require("../resources/OrderResource");
-const Cart = require("../models/Cart");
 const Address = require("../models/Address");
 const OrderStatus = require("../models/OrderStatus");
 const Promotion = require("../models/Promotion");
-const Item = require("../models/Item");
 const User = require("../models/User");
-const filterAllowFields = require("../utils/filterAllowFields");
 
-const orderIncludes = [Cart, OrderStatus, Promotion, Item, Address, User];
+const orderIncludes = [OrderStatus, Promotion, Address, User];
 
 const OrderController = {
   find: asyncHandler(async (req, res) => {
@@ -26,12 +23,10 @@ const OrderController = {
 
   create: asyncHandler(async (req, res) => {
     const {
-      cart_id,
       address_id,
       orderstatus_id,
       promotion_id,
-      item_id,
-      user_id,
+      app_user_id,
       quantity,
       deliveryfees,
       totalprice,
@@ -39,12 +34,10 @@ const OrderController = {
 
     try {
       const order = await Order.create({
-        cart_id,
         address_id,
         orderstatus_id,
         promotion_id,
-        item_id,
-        user_id,
+        app_user_id,
         quantity,
         deliveryfees,
         totalprice,
@@ -62,32 +55,14 @@ const OrderController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const allowFields = [
-      "cart_id",
-      "address_id",
-      "orderstatus_id",
-      "promotion_id",
-      "item_id",
-      "user_id",
-      "quantity",
-      "deliveryfees",
-      "totalprice",
-    ];
+    const order = await Order.findByPk(id);
 
-    const filteredBody = filterAllowFields(req.body, allowFields);
+    if (!order) {
+      return res.status(404).json({ msg: "Order not found" });
+    }
+    await order.update(req.body);
 
-    await Order.update(filteredBody, { where: { id } });
-
-    const updatedOrder = await Order.findOne({
-      where: { id },
-      include: orderIncludes,
-    });
-
-    if (!updatedOrder)
-      return res.status(400).json({ msg: "update failed! && check your id!" });
-
-    const orderResource = new OrderResource(updatedOrder).toArray();
-    return res.json(orderResource);
+    return res.json({ msg: "Update success" });
   }),
 
   destroy: asyncHandler(async (req, res) => {

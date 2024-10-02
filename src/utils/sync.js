@@ -11,7 +11,6 @@ const Engine = require("../models/Engine");
 const Car = require("../models/Car");
 const Item = require("../models/Item");
 const MainCategory = require("../models/MainCategory");
-const SecondCategory = require("../models/SecondCategory");
 const CarItem = require("../models/CarItem");
 const ItemImage = require("../models/ItemImage");
 const Address = require("../models/Address");
@@ -22,6 +21,8 @@ const Promotion = require("../models/Promotion");
 const Order = require("../models/Order");
 const DiscountType = require("../models/DiscountType");
 const Discount = require("../models/Discount");
+const Slider = require("../models/Slider");
+const Brand = require("../models/Brand");
 
 async function sync() {
   try {

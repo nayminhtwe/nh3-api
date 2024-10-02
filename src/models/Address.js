@@ -10,7 +10,7 @@ const Address = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
+    app_user_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       references: {
         model: User,
@@ -47,6 +47,8 @@ const Address = sequelize.define(
   { timestamps: false }
 );
 
-Address.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
+Address.belongsTo(User, { foreignKey: "app_user_id", onDelete: "CASCADE" });
+
+User.hasMany(Address, { foreignKey: "app_user_id", onDelete: "CASCADE" });
 
 module.exports = Address;

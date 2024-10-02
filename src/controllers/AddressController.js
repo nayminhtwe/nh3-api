@@ -14,11 +14,18 @@ const AddressController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { user_id, buildingNo, floor, isSave, unit, addressTitle, street } =
-      req.body;
+    const {
+      app_user_id,
+      buildingNo,
+      floor,
+      isSave,
+      unit,
+      addressTitle,
+      street,
+    } = req.body;
 
     const result = await Address.create({
-      user_id,
+      app_user_id,
       buildingNo,
       floor,
       isSave,
@@ -36,8 +43,14 @@ const AddressController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
+    const address = await Address.findByPk(id);
+
+    if (!address) {
+      return res.status(404).json({ msg: "Address not found" });
+    }
+
     const allowFields = [
-      "user_id",
+      "app_user_id",
       "buildingNo",
       "floor",
       "isSave",
@@ -47,20 +60,20 @@ const AddressController = {
     ];
 
     const filteredBody = await filterAllowFields(req.body, allowFields);
-    const [update] = await Address.update(filteredBody, { where: { id } });
 
-    if (!update) return res.status(400).json({ msg: "Update failed" });
+    await address.update(filteredBody);
 
-    const updateData = await Address.findOne({ where: { id } });
-    return res.json(new AddressResource(updateData).exec());
+    return res.json({ msg: "update success" });
   }),
 
   destroy: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const result = await Address.destroy({ where: { id } });
+    const address = await Address.findByPk(id);
 
-    if (!result) return res.status(400).json({ msg: "Invalid id!" });
+    if (!address) return res.status(404).json({ msg: "Address not found" });
+
+    await address.destroy();
 
     return res.sendStatus(204);
   }),

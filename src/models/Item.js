@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const MainCategory = require("./MainCategory");
+const Statuses = require("./Statuses");
 
 const Item = sequelize.define(
   "item",
@@ -17,6 +18,23 @@ const Item = sequelize.define(
     brandName: {
       type: DataTypes.STRING,
     },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    status_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      references: {
+        model: Statuses, // Assuming Status is the model for the statuses table
+        key: "id",
+      },
+      allowNull: false,
+      onDelete: "CASCADE",
+    },
     main_category_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
@@ -24,6 +42,7 @@ const Item = sequelize.define(
         model: MainCategory,
         key: "id",
       },
+      onDelete: "CASCADE",
     },
     is_feature: {
       type: DataTypes.BOOLEAN,
@@ -38,26 +57,39 @@ const Item = sequelize.define(
       unique: true,
       allowNull: false,
     },
+    LKB_No: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
     price: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: new Date(),
-      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: new Date(),
-      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   },
-  { timestamps: false }
+  {
+    timestamps: true, // This enables Sequelize to automatically manage the createdAt and updatedAt fields
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+  }
 );
 
+// Defining associations
 Item.belongsTo(MainCategory, {
   foreignKey: "main_category_id",
+  onDelete: "CASCADE",
+});
+
+Item.belongsTo(Statuses, {
+  foreignKey: "status_id",
   onDelete: "CASCADE",
 });
 

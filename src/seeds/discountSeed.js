@@ -3,7 +3,7 @@ const Discount = require("../models/Discount");
 async function discountSeed() {
   const discounts = [
     {
-      item_id: 1,
+      item_id: 15,
       start_date: new Date(),
       end_date: new Date(new Date().setMonth(new Date().getMonth() + 1)),
       discount_type_id: 1,
@@ -11,7 +11,7 @@ async function discountSeed() {
       is_active: true,
     },
     {
-      item_id: 2,
+      item_id: 17,
       start_date: new Date(),
       end_date: new Date(new Date().setMonth(new Date().getMonth() + 2)),
       discount_type_id: 2,

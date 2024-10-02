@@ -22,17 +22,16 @@ const PromotionController = {
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
 
+    const promotion = await Promotion.findByPk(id);
+
+    if (!promotion) return res.status(404).json({ msg: "Promotion not found" });
+
     const allowFields = ["OE_NO", "type"];
     const filteredBody = filterAllowFields(req.body, allowFields);
 
-    const [update] = await Promotion.update(filteredBody, { where: { id } });
+    await promotion.update(filteredBody);
 
-    if (!update) return res.status(400).json({ msg: "Update failed" });
-
-    const updatedPromotion = await Promotion.findOne({
-      where: { id },
-    });
-    return res.json(updatedPromotion);
+    return res.json({ msg: "Update success" });
   }),
 
   destroy: asyncHandler(async (req, res) => {
