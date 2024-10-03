@@ -13,7 +13,7 @@ async function orderSeed() {
     },
     {
       address_id: 2,
-      orderstatus_id: 3,
+      orderstatus_id: 2,
       promotion_id: 2,
       app_user_id: 2,
       quantity: 2,
