@@ -13,7 +13,7 @@ const validateLogin = [
 ];
 
 const validateRegister = [
-  body("transcation_id").notEmpty().isString(),
+  body("transaction_id").notEmpty().isString(),
   body("otp_code").notEmpty().isString(),
   body("name").notEmpty().isString().withMessage("name must be string"),
   body("phone_number").notEmpty().isMobilePhone(),

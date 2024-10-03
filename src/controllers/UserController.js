@@ -27,12 +27,12 @@ module.exports = {
       return res.status(400).json({ error: "Phone number is required" });
     }
 
-    const { transcation_id, otp_code } = await User.generateOTP(phone_number);
+    const { transaction_id, otp_code } = await User.generateOTP(phone_number);
 
     // send sms
     await sendSMS(phone_number, otp_code, "L.K.B.NH3");
 
-    return res.json({ phone_number, transcation_id });
+    return res.json({ phone_number, transaction_id });
   }),
 
   register: asyncHandler(async (req, res) => {

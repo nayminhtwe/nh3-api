@@ -68,8 +68,8 @@ User.generateOTP = async (phone_number) => {
   // hashed the otp code to store the db
   const hashedOTP = await bcrypt.hash(otp_code, 10);
 
-  // generate a transcation_id for one_time_passwords
-  const transcation_id = generateTranscationId();
+  // generate a transaction_id for one_time_passwords
+  const transaction_id = generateTranscationId();
 
   // set the expire time for otp
   const expires_at = new Date(Date.now() + 5 * 60 * 1000);
@@ -77,22 +77,22 @@ User.generateOTP = async (phone_number) => {
   await Otp.create({
     phone_number,
     otp_code: hashedOTP,
-    transcation_id,
+    transaction_id,
     enabled: true,
     expires_at,
   });
 
-  return { transcation_id, otp_code };
+  return { transaction_id, otp_code };
 };
 
 User.register = async ({
   phone_number,
   otp_code,
-  transcation_id,
+  transaction_id,
   name,
   password,
 }) => {
-  const OTP = await Otp.findOne({ where: { phone_number, transcation_id } });
+  const OTP = await Otp.findOne({ where: { phone_number, transaction_id } });
 
   if (OTP) {
     // if OTP is expired

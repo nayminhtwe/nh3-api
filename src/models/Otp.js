@@ -18,7 +18,7 @@ const Otp = sequelize.define(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    transcation_id: {
+    transaction_id: {
       type: DataTypes.STRING(191),
       allowNull: false,
       unique: true,
