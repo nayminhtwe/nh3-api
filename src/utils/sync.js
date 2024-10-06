@@ -23,6 +23,7 @@ const DiscountType = require("../models/DiscountType");
 const Discount = require("../models/Discount");
 const Slider = require("../models/Slider");
 const Brand = require("../models/Brand");
+const Otp = require("../models/Otp");
 
 async function sync() {
   try {
