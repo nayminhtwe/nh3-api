@@ -22,6 +22,15 @@ class ItemResource extends Resource {
           item_id: image.item_id,
           path: image.path,
         })),
+      cars:
+        this.cars &&
+        this.cars.map((car) => ({
+          id: car.id,
+          company: car.company ? car.company.name : null,
+          model: car.car_model ? car.car_model.name : null,
+          year: car.year,
+          engine: car.engine_power ? car.engine_power.enginepower : null,
+        })),
     };
   }
 }

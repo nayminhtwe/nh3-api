@@ -4,7 +4,11 @@ const MainCategory = require("../models/MainCategory");
 const filterAllowFields = require("../utils/filterAllowFields");
 const ItemImage = require("../models/ItemImage");
 const ItemResource = require("../resources/ItemResource");
-const { Sequelize } = require("sequelize");
+const { Sequelize, Model } = require("sequelize");
+const Car = require("../models/Car");
+const Company = require("../models/Company");
+const Engine = require("../models/Engine");
+const CarModel = require("../models/CarModel");
 
 const includeFields = [MainCategory, ItemImage];
 
@@ -17,7 +21,26 @@ const ItemController = {
     const offset = (page - 1) * limit;
 
     const { count, rows: items } = await Item.findAndCountAll({
-      include: includeFields,
+      include: [
+        ...includeFields,
+        {
+          model: Car,
+          include: [
+            {
+              model: Company,
+              attributes: ["name"],
+            },
+            {
+              model: CarModel,
+              attributes: ["name"],
+            },
+            {
+              model: Engine,
+              attributes: ["enginepower"],
+            },
+          ],
+        },
+      ],
       limit,
       offset,
       attributes: [
@@ -31,6 +54,8 @@ const ItemController = {
         [Sequelize.literal(`price / ${user.percentage}`), "price"],
       ],
     });
+
+    console.log("data: ", items[0].cars[0]);
 
     const totalPages = Math.ceil(count / limit);
     const nextPage = page < totalPages ? page + 1 : null;
@@ -55,7 +80,6 @@ const ItemController = {
       })
     );
   }),
-
   create: asyncHandler(async (req, res) => {
     const {
       name,

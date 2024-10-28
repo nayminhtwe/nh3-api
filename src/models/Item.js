@@ -2,6 +2,8 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const MainCategory = require("./MainCategory");
 const Statuses = require("./Statuses");
+const CarItem = require("./CarItem");
+const Car = require("./Car");
 
 const Item = sequelize.define(
   "item",
@@ -29,7 +31,7 @@ const Item = sequelize.define(
     status_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       references: {
-        model: Statuses, // Assuming Status is the model for the statuses table
+        model: Statuses,
         key: "id",
       },
       allowNull: false,
@@ -76,7 +78,7 @@ const Item = sequelize.define(
     },
   },
   {
-    timestamps: true, // This enables Sequelize to automatically manage the createdAt and updatedAt fields
+    timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
   }
@@ -86,6 +88,18 @@ const Item = sequelize.define(
 Item.belongsTo(MainCategory, {
   foreignKey: "main_category_id",
   onDelete: "CASCADE",
+});
+
+Car.belongsToMany(Item, {
+  through: CarItem,
+  foreignKey: "car_id",
+  otherKey: "item_id",
+});
+
+Item.belongsToMany(Car, {
+  through: CarItem,
+  foreignKey: "item_id",
+  otherKey: "car_id",
 });
 
 Item.belongsTo(Statuses, {

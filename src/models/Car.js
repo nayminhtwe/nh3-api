@@ -2,7 +2,6 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const Company = require("./Company");
 const CarModel = require("./CarModel");
-const Year = require("./Year");
 const Engine = require("./Engine");
 
 const Car = sequelize.define(

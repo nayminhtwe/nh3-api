@@ -48,6 +48,9 @@ const User = sequelize.define(
 
 // generate one time password
 User.generateOTP = async (phone_number) => {
+  const user = await User.findOne({ where: { phone_number } });
+  if (user) throw createError("User already registered. Please login", 400);
+
   // validate otp is exists with phone number
   const OTPExists = await Otp.findOne({ where: { phone_number } });
 

@@ -41,7 +41,4 @@ const CarItem = sequelize.define(
   { timestamps: false }
 );
 
-CarItem.belongsTo(Item, { foreignKey: "item_id", onDelete: "CASCADE" });
-CarItem.belongsTo(Car, { foreignKey: "car_id", onDelete: "CASCADE" });
-
 module.exports = CarItem;
