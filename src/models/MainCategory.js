@@ -28,4 +28,5 @@ const MainCategory = sequelize.define(
   { timestamps: false }
 );
 
+/// image
 module.exports = MainCategory;

@@ -1,6 +1,6 @@
 const Statuses = require("../models/Statuses");
 
-async function statusesSeeder() {
+async function statusSeed() {
   const statuses = [
     { name: "Available", created_at: new Date(), updated_at: new Date() },
     { name: "Out of Stock", created_at: new Date(), updated_at: new Date() },
@@ -13,6 +13,6 @@ async function statusesSeeder() {
   await Statuses.bulkCreate(statuses);
 }
 
-statusesSeeder();
+statusSeed();
 
-module.exports = statusesSeeder;
+module.exports = statusSeed;

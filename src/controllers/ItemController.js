@@ -55,7 +55,7 @@ const ItemController = {
       ],
     });
 
-    console.log("data: ", items[0].cars[0]);
+    console.log("items: ", items);
 
     const totalPages = Math.ceil(count / limit);
     const nextPage = page < totalPages ? page + 1 : null;
@@ -80,6 +80,7 @@ const ItemController = {
       })
     );
   }),
+
   create: asyncHandler(async (req, res) => {
     const {
       name,

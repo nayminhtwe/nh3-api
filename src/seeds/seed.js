@@ -14,28 +14,18 @@ const orderItemSeed = require("./orderItemSeed");
 const orderSeed = require("./orderSeed");
 const orderStautsSeed = require("./orderStatusSeed");
 const promotionSeed = require("./promotionSeed");
+const statusSeed = require("./statusSeed");
 const userSeed = require("./userSeed");
 const yearSeed = require("./yearSeed");
 
 async function seed() {
-  await userSeed();
   await companySeed();
-  await carModelSeed();
-  await yearSeed();
   await engineSeed();
+  await carModelSeed();
   await carSeed();
+  await statusSeed();
   await mainCategorySeed();
-  await itemSeed(); // item
-  await carItemSeed();
-  await cartSeed(); // cart
-  await promotionSeed();
-  await cartItemSeed(); // cart item
-  await orderItemSeed();
-  await orderStautsSeed();
-  await addressSeed();
-  await orderSeed();
-  await discountTypeSeed();
-  await discountSeed();
+  await itemSeed();
 }
 
 seed();
