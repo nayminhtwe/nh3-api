@@ -38,6 +38,4 @@ async function cartSeed() {
   console.log("inserted cart");
 }
 
-cartSeed();
-
 module.exports = cartSeed;

@@ -39,6 +39,10 @@ const User = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
+    is_approve: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     paranoid: true,
@@ -125,6 +129,7 @@ User.register = async ({
     name,
     phone_number,
     password: await bcrypt.hash(password, 10),
+    is_approve: true,
   });
 
   const { access_token, refresh_token } = await generateAccessAndRefreshToken(

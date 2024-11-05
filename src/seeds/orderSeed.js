@@ -26,6 +26,4 @@ async function orderSeed() {
   console.log("Inserted orders");
 }
 
-orderSeed();
-
 module.exports = orderSeed;

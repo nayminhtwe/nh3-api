@@ -2,7 +2,7 @@ const express = require("express");
 const ItemImageController = require("../controllers/ItemImageController");
 const { validateId } = require("../middlewares/itemsValidate");
 const validator = require("../utils/validator");
-const { itemsUpload } = require("../middlewares/uploads/itemsUpload");
+const { fileUpload } = require("../middlewares/uploads/fileUpload");
 const router = express.Router();
 
 router.get("/item-images", ItemImageController.find);
@@ -11,7 +11,7 @@ router.put(
   "/item-images/:id",
   validateId,
   validator,
-  itemsUpload.single("image"),
+  fileUpload.single("image"),
   ItemImageController.update
 );
 

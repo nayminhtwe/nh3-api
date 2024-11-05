@@ -5,8 +5,12 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (file.fieldname === "slider") {
       cb(null, path.join(__dirname, "../../public/images/sliders"));
-    } else {
+    } else if (file.fieldname === "main_categories") {
+      cb(null, path.join(__dirname, "../../public/images/main_categories"));
+    } else if (file.fieldname === "items") {
       cb(null, path.join(__dirname, "../../public/images/items"));
+    } else {
+      throw new Error("Invalid field name for file upload");
     }
   },
 
@@ -32,4 +36,4 @@ const upload = multer({
   },
 });
 
-module.exports = { itemsUpload: upload };
+module.exports = { fileUpload: upload };

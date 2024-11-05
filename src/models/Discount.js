@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
-const DiscountType = require("./DiscountType");
 const Item = require("./Item");
 
 const Discount = sequelize.define(
@@ -29,17 +28,13 @@ const Discount = sequelize.define(
       defaultValue: new Date(),
       allowNull: false,
     },
-    discount_type_id: {
-      type: DataTypes.BIGINT.UNSIGNED,
+    discount_type: {
+      type: DataTypes.ENUM("percentage", "fixed"),
       allowNull: false,
-      references: {
-        model: DiscountType,
-        key: "id",
-      },
     },
-    max_item: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    discount_value: {
+      type: DataTypes.DECIMAL(8, 2),
+      defaultValue: 0,
     },
     is_active: {
       type: DataTypes.BOOLEAN,
@@ -60,15 +55,6 @@ const Discount = sequelize.define(
 );
 
 Discount.belongsTo(Item, { foreignKey: "item_id", onDelete: "CASCADE" });
-
-Discount.belongsTo(DiscountType, {
-  foreignKey: "discount_type_id",
-  onDelete: "CASCADE",
-});
-
-DiscountType.hasMany(Discount, {
-  foreignKey: "discount_type_id",
-  onDelete: "CASCADE",
-});
+Item.hasMany(Discount, { foreignKey: "item_id", onDelete: "CASCADE" });
 
 module.exports = Discount;

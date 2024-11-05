@@ -10,6 +10,5 @@ async function carModelSeed() {
   await CarModel.bulkCreate(carModels);
   console.log("Inserted car models");
 }
-carModelSeed();
 
 module.exports = carModelSeed;

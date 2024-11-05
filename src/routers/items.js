@@ -2,7 +2,7 @@ const express = require("express");
 const ItemController = require("../controllers/ItemController");
 const { validateBody, validateId } = require("../middlewares/itemsValidate");
 const validator = require("../utils/validator");
-const { itemsUpload } = require("../middlewares/uploads/itemsUpload");
+const { fileUpload } = require("../middlewares/uploads/fileUpload");
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.post("/items", validateBody, validator, ItemController.create);
 
 router.post(
   "/items/:id/upload",
-  itemsUpload.array("images"),
+  fileUpload.array("items"),
   ItemController.upload
 );
 

@@ -7,23 +7,16 @@ class DiscountResource extends Resource {
       item_id: this.item_id,
       start_date: this.start_date,
       end_date: this.end_date,
-      discount_type_id: this.discount_type_id,
-      max_item: this.max_item,
       is_active: this.is_active,
+      discount_type: this.discount_type,
+      discount_value: this.discount_value,
       created_at: this.created_at,
       updated_at: this.updated_at,
-      item: this.item ? this.tranformItem(this.item) : null,
-
-      discount_type: this.discount_type
-        ? {
-            id: this.discount_type.id,
-            type: this.discount_type.type,
-          }
-        : null,
+      item: this.item ? this.transformItem(this.item) : null,
     };
   }
 
-  tranformItem(item) {
+  transformItem(item) {
     return {
       id: item.id,
       name: item.name,

@@ -6,8 +6,6 @@ const validateId = [
 
 const validateBody = [
   body("item_id").notEmpty(),
-  body("discount_type_id").notEmpty().isInt(),
-  body("max_item").notEmpty().isInt(),
   body("is_active").notEmpty().isBoolean(),
 ];
 

@@ -67,7 +67,7 @@ async function itemSeed() {
       description: "Premium spark plugs for long-lasting performance",
       quantity: 100,
       status_id: 5, // Limited Stock
-      main_category_id: 5,
+      main_category_id: 3,
       is_feature: true,
       is_universal: false,
       OE_NO: "OE77889",
@@ -82,7 +82,7 @@ async function itemSeed() {
       description: "Durable wipers for clear visibility",
       quantity: 300,
       status_id: 1, // Available
-      main_category_id: 6,
+      main_category_id: 4,
       is_feature: false,
       is_universal: true,
       OE_NO: "OE99112",
@@ -96,7 +96,5 @@ async function itemSeed() {
   await Item.bulkCreate(items);
   console.log("Inserted items");
 }
-
-itemSeed();
 
 module.exports = itemSeed;

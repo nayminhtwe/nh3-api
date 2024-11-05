@@ -14,6 +14,10 @@ const MainCategory = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: new Date(),

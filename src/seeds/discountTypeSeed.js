@@ -11,6 +11,4 @@ async function discountTypeSeed(req, res) {
   console.log("Inserted discount types");
 }
 
-discountTypeSeed();
-
 module.exports = discountTypeSeed;

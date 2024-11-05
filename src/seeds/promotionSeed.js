@@ -16,6 +16,4 @@ async function promotionSeed() {
   console.log("inseretd pormotions");
 }
 
-promotionSeed();
-
 module.exports = promotionSeed;

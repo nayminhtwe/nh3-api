@@ -14,6 +14,4 @@ async function orderStautsSeed() {
   console.log("order status seed successfully");
 }
 
-orderStautsSeed();
-
 module.exports = orderStautsSeed;

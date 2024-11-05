@@ -13,6 +13,4 @@ async function companySeed() {
   console.log("Inserted companies");
 }
 
-companySeed();
-
 module.exports = companySeed;

@@ -1,5 +1,6 @@
 const Car = require("./Car");
 const CarItem = require("./CarItem");
+const Discount = require("./Discount");
 const Item = require("./Item");
 
 Item.belongsToMany(Car, {

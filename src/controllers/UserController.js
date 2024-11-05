@@ -12,7 +12,7 @@ const { sendSMS } = require("../utils/sendSMS");
 module.exports = {
   verify: asyncHandler(async (req, res) => {
     const { user } = req;
-    return res.json(user);
+    return res.json({ status: "active", user });
   }),
 
   find: asyncHandler(async (req, res) => {

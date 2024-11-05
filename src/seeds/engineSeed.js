@@ -13,4 +13,4 @@ async function engineSeed() {
   console.log("Inserted engines");
 }
 
-engineSeed();
+module.exports = engineSeed;

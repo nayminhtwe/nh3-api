@@ -2,14 +2,14 @@ const express = require("express");
 const SliderController = require("../controllers/SliderController");
 const { validateBody, validateId } = require("../middlewares/validateSlider");
 const validator = require("../utils/validator");
-const { itemsUpload } = require("../middlewares/uploads/itemsUpload");
+const { fileUpload } = require("../middlewares/uploads/fileUpload");
 const router = express.Router();
 
 router.get("/sliders", SliderController.find);
 
 router.post(
   "/sliders",
-  itemsUpload.single("slider"),
+  fileUpload.single("slider"),
   validateBody,
   validator,
   SliderController.create
@@ -17,7 +17,7 @@ router.post(
 
 router.put(
   "/sliders/:id",
-  itemsUpload.single("slider"),
+  fileUpload.single("slider"),
   validateId,
   validateBody,
   validator,

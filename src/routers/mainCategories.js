@@ -6,6 +6,7 @@ const {
 } = require("../middlewares/mainCategoriesValidate");
 const router = express.Router();
 const validator = require("../utils/validator");
+const { fileUpload } = require("../middlewares/uploads/fileUpload");
 
 router.get("/main-categories", MainCategoryController.find);
 
@@ -13,6 +14,7 @@ router.post(
   "/main-categories",
   validateBody,
   validator,
+  fileUpload.single("main_categories"),
   MainCategoryController.create
 );
 
@@ -21,6 +23,7 @@ router.put(
   validateId,
   validateBody,
   validator,
+  fileUpload.single("main_categories"),
   MainCategoryController.update
 );
 

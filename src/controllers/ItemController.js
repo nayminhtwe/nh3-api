@@ -9,38 +9,46 @@ const Car = require("../models/Car");
 const Company = require("../models/Company");
 const Engine = require("../models/Engine");
 const CarModel = require("../models/CarModel");
+const Discount = require("../models/Discount");
 
 const includeFields = [MainCategory, ItemImage];
 
 const ItemController = {
   find: asyncHandler(async (req, res) => {
     const { user } = req;
+    const { feature, discount } = req.query;
+    const where = {};
+
+    if (feature === "true") {
+      where.is_feature = true;
+    }
 
     const limit = 10;
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
 
+    const include = [
+      ...includeFields,
+      {
+        model: Car,
+        include: [
+          { model: Company, attributes: ["name"] },
+          { model: CarModel, attributes: ["name"] },
+          { model: Engine, attributes: ["enginepower"] },
+        ],
+      },
+    ];
+
+    if (discount === "true") {
+      include.push({
+        model: Discount,
+        required: true,
+      });
+    }
+
     const { count, rows: items } = await Item.findAndCountAll({
-      include: [
-        ...includeFields,
-        {
-          model: Car,
-          include: [
-            {
-              model: Company,
-              attributes: ["name"],
-            },
-            {
-              model: CarModel,
-              attributes: ["name"],
-            },
-            {
-              model: Engine,
-              attributes: ["enginepower"],
-            },
-          ],
-        },
-      ],
+      where,
+      include,
       limit,
       offset,
       attributes: [
@@ -54,8 +62,6 @@ const ItemController = {
         [Sequelize.literal(`price / ${user.percentage}`), "price"],
       ],
     });
-
-    console.log("items: ", items);
 
     const totalPages = Math.ceil(count / limit);
     const nextPage = page < totalPages ? page + 1 : null;

@@ -4,6 +4,7 @@ async function orderItemSeed() {
   const orderItems = [
     {
       item_id: 1,
+      order_id: 1,
       subprice: 20.0,
       totalprice: 40.0,
       quantity: 1,
@@ -12,6 +13,7 @@ async function orderItemSeed() {
     },
     {
       item_id: 3,
+      order_id: 2,
       subprice: 200,
       totalprice: 45.0,
       quantity: 3,
@@ -23,7 +25,5 @@ async function orderItemSeed() {
   await OrderItem.bulkCreate(orderItems);
   console.log("Inserted order items");
 }
-
-// orderItemSeed();
 
 module.exports = orderItemSeed;

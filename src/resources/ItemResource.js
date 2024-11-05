@@ -29,7 +29,16 @@ class ItemResource extends Resource {
           company: car.company ? car.company.name : null,
           model: car.car_model ? car.car_model.name : null,
           year: car.year,
-          engine: car.engine_power ? car.engine_power.enginepower : null,
+          engine: car.engine ? car.engine.enginepower : null,
+        })),
+      discounts:
+        this.discounts &&
+        this.discounts.map((discount) => ({
+          id: discount.id,
+          type: discount.discount_type,
+          startDate: discount.start_date,
+          endDate: discount.end_date,
+          isActive: discount.is_active,
         })),
     };
   }

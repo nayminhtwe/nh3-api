@@ -26,6 +26,4 @@ async function userSeed() {
   console.log("Inserted users");
 }
 
-userSeed();
-
 module.exports = userSeed;

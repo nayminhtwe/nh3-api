@@ -10,7 +10,10 @@ const MainCategoryController = {
   create: asyncHandler(async (req, res) => {
     const { name } = req.body;
 
-    const mainCategory = await MainCategory.create({ name });
+    if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
+    const image = req.file.filename;
+
+    const mainCategory = await MainCategory.create({ name, image });
     return res.json(mainCategory);
   }),
 
@@ -18,11 +21,18 @@ const MainCategoryController = {
     const { id } = req.params;
     const { name } = req.body;
 
-    const [result] = await MainCategory.update({ name }, { where: { id } });
-
-    if (!result) return res.status(400).json({ msg: "update failed!" });
+    if (!req.file) return res.status(400).json({ msg: "No file uploaded" });
+    const image = req.file.filename;
 
     const mainCategory = await MainCategory.findByPk(id);
+
+    if (!mainCategory)
+      return res.status(404).json({ msg: "Main category not found" });
+
+    await mainCategory.update({
+      name: name ? name : mainCategory.name,
+      image: image ? image : mainCategory.image,
+    });
 
     return res.json(mainCategory);
   }),

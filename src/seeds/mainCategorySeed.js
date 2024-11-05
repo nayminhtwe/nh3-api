@@ -2,19 +2,14 @@ const MainCategory = require("../models/MainCategory");
 
 async function mainCategorySeed() {
   const mainCategorySamples = [
-    { name: "Exterior Accessories" },
-    { name: "Interior Accessories" },
-    { name: "Performance Parts" },
-    { name: "Replacement Parts" },
-    { name: "Tools & Equipment" },
-    { name: "Car Care Products" },
-    { name: "Lighting & Electrical" },
+    { name: "Exterior Accessories", image: "404.jpeg" },
+    { name: "Interior Accessories", image: "food-logo.jpeg" },
+    { name: "Performance Parts", image: "food-logo.jpeg" },
+    { name: "Replacement Parts", image: "yangon.jpg" },
   ];
 
   await MainCategory.bulkCreate(mainCategorySamples);
   console.log("Inserted main categories");
 }
-
-mainCategorySeed();
 
 module.exports = mainCategorySeed;

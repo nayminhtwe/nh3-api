@@ -26,6 +26,4 @@ const addressSeed = async (req, res) => {
   console.log("inserted address");
 };
 
-addressSeed();
-
 module.exports = addressSeed;

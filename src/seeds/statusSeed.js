@@ -11,8 +11,7 @@ async function statusSeed() {
   ];
 
   await Statuses.bulkCreate(statuses);
+  console.log("seeded statuses");
 }
-
-statusSeed();
 
 module.exports = statusSeed;

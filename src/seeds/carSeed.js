@@ -38,6 +38,4 @@ async function carSeed() {
   console.log("Inserted cars");
 }
 
-carSeed();
-
 module.exports = carSeed;
