@@ -11,6 +11,7 @@ class ItemResource extends Resource {
       isUniversal: this.is_universal,
       OE_NO: this.OE_NO,
       price: this.price,
+      description: this.description,
       main_category: this.main_category && {
         id: this.main_category.id,
         name: this.main_category.name,

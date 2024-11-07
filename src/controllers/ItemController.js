@@ -54,6 +54,7 @@ const ItemController = {
         "id",
         "name",
         "brandName",
+        "description",
         "main_category_id",
         "is_feature",
         "is_universal",
@@ -69,7 +70,6 @@ const ItemController = {
       ],
     });
 
-    console.log(items[0].cars[0].engine_power);
     const totalPages = Math.ceil(count / limit);
     const nextPage = page < totalPages ? page + 1 : null;
     const prevPage = page > 1 ? page - 1 : null;
