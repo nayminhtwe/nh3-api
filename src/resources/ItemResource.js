@@ -29,7 +29,7 @@ class ItemResource extends Resource {
           company: car.company ? car.company.name : null,
           model: car.car_model ? car.car_model.name : null,
           year: car.year,
-          engine: car.engine ? car.engine.enginepower : null,
+          eningepower: car.engine_power ? car.engine_power.enginepower : null,
         })),
       discounts:
         this.discounts &&

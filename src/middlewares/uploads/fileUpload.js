@@ -8,6 +8,7 @@ const storage = multer.diskStorage({
     } else if (file.fieldname === "main_categories") {
       cb(null, path.join(__dirname, "../../public/images/main_categories"));
     } else if (file.fieldname === "items") {
+      console.log(file.fieldname);
       cb(null, path.join(__dirname, "../../public/images/items"));
     } else {
       throw new Error("Invalid field name for file upload");
@@ -23,7 +24,7 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 4000000 },
   fileFilter: (req, file, cb) => {
-    const allowTypes = ["image/jpeg", "image/png", "image/gif"];
+    const allowTypes = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
 
     if (!allowTypes.includes(file.mimetype)) {
       const error = new Error(

@@ -45,7 +45,6 @@ const ItemController = {
         required: true,
       });
     }
-
     const { count, rows: items } = await Item.findAndCountAll({
       where,
       include,
@@ -59,10 +58,18 @@ const ItemController = {
         "is_feature",
         "is_universal",
         "OE_NO",
-        [Sequelize.literal(`price / ${user.percentage}`), "price"],
+        [
+          Sequelize.literal(
+            user.percentage === 0
+              ? "price"
+              : `ROUND(price / ${user.percentage}, 2)`
+          ),
+          "price",
+        ],
       ],
     });
 
+    console.log(items[0].cars[0].engine_power);
     const totalPages = Math.ceil(count / limit);
     const nextPage = page < totalPages ? page + 1 : null;
     const prevPage = page > 1 ? page - 1 : null;
@@ -124,6 +131,8 @@ const ItemController = {
 
   upload: asyncHandler(async (req, res) => {
     const { id } = req.params;
+
+    console.log("files: ", req.files);
 
     const images = req.files;
 
