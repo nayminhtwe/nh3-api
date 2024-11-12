@@ -3,10 +3,10 @@ const OrderStatus = require("../models/OrderStatus");
 async function orderStautsSeed() {
   const orderStatuses = [
     {
-      status: "Processing",
+      status: "pending",
     },
     {
-      status: "Shipped",
+      status: "shipped",
     },
   ];
 

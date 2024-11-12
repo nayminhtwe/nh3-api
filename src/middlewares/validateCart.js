@@ -5,7 +5,11 @@ const validateId = [
 ];
 
 const validateBody = [
-  body("quantity").notEmpty().isInt().withMessage("quantity must be integer"),
+  body("item_id").notEmpty().isInt().withMessage("Item id must be an integer"),
+  body("quantity")
+    .notEmpty()
+    .isInt({ min: 1 })
+    .withMessage("Quantity must be a positive integer"),
 ];
 
 module.exports = {

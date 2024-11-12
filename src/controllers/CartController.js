@@ -2,6 +2,8 @@ const Cart = require("../models/Cart");
 const asyncHandler = require("express-async-handler");
 const CartResource = require("../resources/CartResource");
 const CartItem = require("../models/CartItem");
+const Item = require("../models/Item");
+const { createError } = require("../utils/createError");
 
 const CartController = {
   find: asyncHandler(async (req, res) => {
@@ -10,9 +12,25 @@ const CartController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const { quantity } = req.body;
+    const { items } = req.body;
 
-    const cart = await Cart.create({ quantity });
+    const cart = await Cart.create({ quantity: items.length });
+
+    items.map(async (item) => {
+      const foundItem = await Item.findByPk(item.item_id);
+
+      if (foundItem) {
+        await CartItem.create({
+          cart_id: cart.id,
+          item_id: item.item_id,
+          price: foundItem.price,
+          quantity: item.quantity || 1,
+        });
+      } else {
+        throw createError("Item not found", 404);
+      }
+    });
+
     return res.json(new CartResource(cart).exec());
   }),
 

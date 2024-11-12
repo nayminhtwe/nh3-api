@@ -6,7 +6,7 @@ class OrderResource extends Resource {
       id: Number(this.id),
       cart_id: this.cart_id,
       address_id: this.address_id,
-      order_status_id: this.order_status_id,
+      order_status_id: this.orderstatus_id,
       promotion_id: this.promotion_id,
       user_id: this.user_id,
       quantity: this.quantity,
@@ -14,14 +14,6 @@ class OrderResource extends Resource {
       totalprice: this.totalprice,
       created_at: this.created_at,
       updated_at: this.updated_at,
-      cart: this.cart
-        ? {
-            id: this.cart.id,
-            itemId: this.cart.item_id,
-            OE_NO: this.cart.OE_NO,
-            quantity: this.cart.quantity,
-          }
-        : null,
       address: this.address
         ? {
             id: this.address.id,
@@ -56,8 +48,27 @@ class OrderResource extends Resource {
             status: this.app_user.status,
           }
         : null,
+      order_items: this.order_items
+        ? this.order_items.map((orderItem) => ({
+            id: orderItem.id,
+            item_id: orderItem.item_id,
+            order_id: orderItem.order_id,
+            subprice: orderItem.subprice,
+            totalprice: orderItem.totalprice,
+            quantity: orderItem.quantity,
+            item: orderItem.item
+              ? {
+                  id: orderItem.item.id,
+                  name: orderItem.item.name,
+                  OE_NO: orderItem.item.OE_NO,
+                }
+              : null,
+          }))
+        : [],
     };
   }
 }
+
+module.exports = OrderResource;
 
 module.exports = OrderResource;

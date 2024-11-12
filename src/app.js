@@ -76,7 +76,7 @@ app.use("/api", addressesRouter);
 app.use("/api", orderStatusesRouter);
 app.use("/api", orderItemsRouter);
 app.use("/api", cartsRouter);
-app.use("/api", cartItemsRouter);
+// app.use("/api", cartItemsRouter);
 app.use("/api", promotionsRouter);
 app.use("/api", ordersRouter);
 app.use("/api", discountTypesRouter);
