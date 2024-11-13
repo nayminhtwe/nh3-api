@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get("/items", ItemController.find);
 
+router.get("/discount-items", ItemController.getDiscountItems);
+
 router.post("/items", validateBody, validator, ItemController.create);
 
 router.post(

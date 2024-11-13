@@ -46,8 +46,14 @@ module.exports = {
 
     const user = await User.findOne({ where: { phone_number } });
 
-    if (!user)
-      return res.status(400).json({ msg: "User not found. register first" });
+    if (!user) {
+      return res.status(404).json({ msg: "User not found. Register first." });
+    }
+
+    // if (!user.is_approve)
+    //   return res.status(401).json({
+    //     msg: "Your account is not approve yet. Please wait for approval.",
+    //   });
 
     if (!(await bcrypt.compare(password, user.password)))
       return res.status(400).json({ msg: "Invalid password" });

@@ -8,6 +8,7 @@ module.exports = {
         id: user.id,
         name: user.name,
         percentage: user.percentage,
+        is_approve: user.is_approve,
       },
       process.env.JWT_ACCESS_SECRET,
       { expiresIn: process.env.JWT_ACCESS_EXPIRE }

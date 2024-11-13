@@ -9,16 +9,13 @@ async function userSeed() {
       name: "Kyaw Gyi",
       phone_number: "2123423",
       password: hash,
-    },
-    {
-      name: "Mya Mya",
-      phone_number: "94234324",
-      password: hash,
+      is_approve: true,
     },
     {
       name: "Alice",
       phone_number: "47349837",
       password: hash,
+      is_approve: true,
     },
   ];
 

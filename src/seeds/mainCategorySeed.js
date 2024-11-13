@@ -6,6 +6,8 @@ async function mainCategorySeed() {
     { name: "Interior Accessories", image: "food-logo.jpeg" },
     { name: "Performance Parts", image: "food-logo.jpeg" },
     { name: "Replacement Parts", image: "yangon.jpg" },
+    { name: "Audio & Electronics", image: "audio-electronics.jpg" },
+    { name: "Wheels & Tires", image: "wheels-tires.jpg" },
   ];
 
   await MainCategory.bulkCreate(mainCategorySamples);

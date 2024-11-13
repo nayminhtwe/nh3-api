@@ -16,16 +16,14 @@ const includeFields = [MainCategory, ItemImage];
 const ItemController = {
   find: asyncHandler(async (req, res) => {
     const { user } = req;
-    const { feature, discount } = req.query;
+    const { feature, universal } = req.query;
     const where = {};
 
     if (feature === "true") {
       where.is_feature = true;
+    } else if (universal === "true") {
+      where.is_universal = true;
     }
-
-    const limit = 10;
-    const page = parseInt(req.query.page) || 1;
-    const offset = (page - 1) * limit;
 
     const include = [
       ...includeFields,
@@ -39,12 +37,10 @@ const ItemController = {
       },
     ];
 
-    if (discount === "true") {
-      include.push({
-        model: Discount,
-        required: true,
-      });
-    }
+    const limit = 10;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
     const { count, rows: items } = await Item.findAndCountAll({
       where,
       include,
@@ -70,6 +66,17 @@ const ItemController = {
       ],
     });
 
+    const filteredItems = items.map((item) => {
+      if (!user.is_approve) {
+        item.price = "****";
+      }
+
+      if (item.is_universal === true) {
+        item.cars = null;
+      }
+      return item;
+    });
+
     const totalPages = Math.ceil(count / limit);
     const nextPage = page < totalPages ? page + 1 : null;
     const prevPage = page > 1 ? page - 1 : null;
@@ -89,9 +96,59 @@ const ItemController = {
           next: `${url}?page=${nextPage}`,
           previous: `${url}?page=${prevPage}`,
         },
-        data: items,
+        data: filteredItems,
       })
     );
+  }),
+
+  getDiscountItems: asyncHandler(async (req, res) => {
+    const items = await Item.findAll({
+      include: {
+        model: Discount,
+        where: { is_active: true },
+        required: true,
+      },
+    });
+
+    const discountedItems = items.map((item) => {
+      let itemPrice = parseFloat(item.price);
+
+      const discounts = [];
+
+      item.discounts.forEach((discount) => {
+        let discountAmount = 0;
+        let discountPrice = itemPrice;
+
+        if (discount.discount_type === "percentage") {
+          discountAmount =
+            itemPrice * (parseFloat(discount.discount_value) / 100);
+          discountPrice = itemPrice - discountAmount;
+        } else if (discount.discount_type === "fixed") {
+          discountAmount = parseFloat(discount.discount_value);
+          discountPrice = itemPrice - discountAmount;
+        }
+
+        discountAmount = Math.round(discountAmount * 100) / 100;
+        discountPrice = Math.round(discountPrice * 100) / 100;
+
+        discounts.push({
+          discount_type: discount.discount_type,
+          discount_value: discount.discount_value,
+          discountAmount: discountAmount,
+          discountPrice: discountPrice,
+        });
+      });
+
+      return {
+        item_id: item.id,
+        name: item.name,
+        brandName: item.brandName,
+        price: itemPrice,
+        discounts: discounts,
+      };
+    });
+
+    return res.json(discountedItems);
   }),
 
   create: asyncHandler(async (req, res) => {
@@ -131,8 +188,6 @@ const ItemController = {
 
   upload: asyncHandler(async (req, res) => {
     const { id } = req.params;
-
-    console.log("files: ", req.files);
 
     const images = req.files;
 

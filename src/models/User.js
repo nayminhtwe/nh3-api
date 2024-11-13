@@ -7,7 +7,6 @@ const Otp = require("./Otp");
 
 const { createError } = require("../utils/createError");
 const generateTranscationId = require("../utils/generateTranscationId");
-const { sendSMS } = require("../utils/sendSMS");
 const { generateAccessAndRefreshToken } = require("../utils/generateTokens");
 
 const User = sequelize.define(
@@ -129,7 +128,6 @@ User.register = async ({
     name,
     phone_number,
     password: await bcrypt.hash(password, 10),
-    is_approve: true,
   });
 
   const { access_token, refresh_token } = await generateAccessAndRefreshToken(
