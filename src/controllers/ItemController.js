@@ -16,13 +16,19 @@ const includeFields = [MainCategory, ItemImage];
 const ItemController = {
   find: asyncHandler(async (req, res) => {
     const { user } = req;
-    const { feature, universal } = req.query;
+    const { feature, universal, category } = req.query;
     const where = {};
 
     if (feature === "true") {
       where.is_feature = true;
-    } else if (universal === "true") {
+    }
+
+    if (universal === "true") {
       where.is_universal = true;
+    }
+
+    if (category) {
+      where.main_category_id = category;
     }
 
     const include = [
@@ -122,11 +128,13 @@ const ItemController = {
         if (discount.discount_type === "percentage") {
           discountAmount =
             itemPrice * (parseFloat(discount.discount_value) / 100);
-          discountPrice = itemPrice - discountAmount;
         } else if (discount.discount_type === "fixed") {
           discountAmount = parseFloat(discount.discount_value);
-          discountPrice = itemPrice - discountAmount;
         }
+
+        // cap the discount amount to avoid the negative price
+        discountAmount = Math.min(discountAmount, itemPrice);
+        discountPrice = itemPrice - discountAmount;
 
         discountAmount = Math.round(discountAmount * 100) / 100;
         discountPrice = Math.round(discountPrice * 100) / 100;
