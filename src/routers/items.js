@@ -3,12 +3,13 @@ const ItemController = require("../controllers/ItemController");
 const { validateBody, validateId } = require("../middlewares/itemsValidate");
 const validator = require("../utils/validator");
 const { fileUpload } = require("../middlewares/uploads/fileUpload");
+const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
 router.get("/items", ItemController.find);
 
-router.get("/discount-items", ItemController.getDiscountItems);
+router.get("/discount-items", auth, ItemController.getDiscountItems);
 
 router.post("/items", validateBody, validator, ItemController.create);
 
