@@ -10,6 +10,8 @@ const Company = require("../models/Company");
 const Engine = require("../models/Engine");
 const CarModel = require("../models/CarModel");
 const Discount = require("../models/Discount");
+const ItemService = require("../services/ItemService");
+const { filtered, paginate } = require("../utils/itemUtils");
 
 const includeFields = [MainCategory, ItemImage];
 
@@ -47,61 +49,20 @@ const ItemController = {
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
 
-    const { count, rows: items } = await Item.findAndCountAll({
-      where,
+    const { count, items } = await ItemService.getItems({
       include,
       limit,
       offset,
-      attributes: [
-        "id",
-        "name",
-        "brandName",
-        "description",
-        "main_category_id",
-        "is_feature",
-        "is_universal",
-        "OE_NO",
-        [
-          Sequelize.literal(
-            user.percentage === 0
-              ? "price"
-              : `ROUND(price / ${user.percentage}, 2)`
-          ),
-          "price",
-        ],
-      ],
+      user,
     });
 
-    const filteredItems = items.map((item) => {
-      if (!user.is_approve) {
-        item.price = "****";
-      }
+    const filteredItems = filtered(items, user);
 
-      if (item.is_universal === true) {
-        item.cars = null;
-      }
-      return item;
-    });
-
-    const totalPages = Math.ceil(count / limit);
-    const nextPage = page < totalPages ? page + 1 : null;
-    const prevPage = page > 1 ? page - 1 : null;
-
-    const url = `${req.protocol}://${req.get("host")}${
-      req.originalUrl.split("?")[0]
-    }`;
+    const pagination = paginate(req, count, limit);
 
     return res.json(
       ItemResource.collection({
-        meta: {
-          page,
-          totalItems: items.length,
-          totalPages,
-        },
-        links: {
-          next: `${url}?page=${nextPage}`,
-          previous: `${url}?page=${prevPage}`,
-        },
+        ...pagination,
         data: filteredItems,
       })
     );
@@ -114,44 +75,29 @@ const ItemController = {
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
 
-    const { count, rows: items } = await Item.findAndCountAll({
+    const include = [
+      ...includeFields,
+      {
+        model: Car,
+        include: [
+          { model: Company, attributes: ["name"] },
+          { model: CarModel, attributes: ["name"] },
+          { model: Engine, attributes: ["enginepower"] },
+        ],
+      },
+      {
+        model: Discount,
+        where: { is_active: true },
+        requried: true,
+        attributes: ["discount_type", "discount_value"],
+      },
+    ];
+
+    const { count, items } = await ItemService.getItems({
+      include,
       limit,
       offset,
-      include: [
-        ...includeFields,
-        {
-          model: Discount,
-          where: { is_active: true },
-          required: true,
-          attributes: ["discount_type", "discount_value"],
-        },
-        {
-          model: Car,
-          include: [
-            { model: Company, attributes: ["name"] },
-            { model: CarModel, attributes: ["name"] },
-            { model: Engine, attributes: ["enginepower"] },
-          ],
-        },
-      ],
-      attributes: [
-        "id",
-        "name",
-        "brandName",
-        "description",
-        "main_category_id",
-        "is_feature",
-        "is_universal",
-        "OE_NO",
-        [
-          Sequelize.literal(
-            user.percentage === 0
-              ? "price"
-              : `ROUND(price / ${user.percentage}, 2)`
-          ),
-          "price",
-        ],
-      ],
+      user,
     });
 
     const discountedItems = items.map((item) => {
@@ -170,7 +116,6 @@ const ItemController = {
           discountAmount = parseFloat(discount.discount_value);
         }
 
-        // cap the discount amount to avoid the negative price
         discountAmount = Math.min(discountAmount, itemPrice);
         discountPrice = itemPrice - discountAmount;
 
@@ -179,7 +124,6 @@ const ItemController = {
 
         discounts.push({
           discount_type: discount.discount_type,
-          discount_value: discount.discount_value,
           discountAmount: discountAmount,
           discountPrice: discountPrice,
         });
@@ -192,36 +136,12 @@ const ItemController = {
       };
     });
 
-    const filteredItems = discountedItems.map((item) => {
-      if (!user.is_approve) {
-        item.price = "****";
-      }
-
-      if (item.is_universal === true) {
-        item.cars = null;
-      }
-      return item;
-    });
-
-    const totalPages = Math.ceil(count / limit);
-    const nextPage = page < totalPages ? page + 1 : null;
-    const prevPage = page > 1 ? page - 1 : null;
-
-    const url = `${req.protocol}://${req.get("host")}${
-      req.originalUrl.split("?")[0]
-    }`;
+    const filteredItems = filtered(discountedItems, user);
+    const pagination = paginate(req, count, limit);
 
     return res.json(
       ItemResource.collection({
-        meta: {
-          page,
-          totalItems: items.length,
-          totalPages,
-        },
-        links: {
-          next: `${url}?page=${nextPage}`,
-          previous: `${url}?page=${prevPage}`,
-        },
+        ...pagination,
         data: filteredItems,
       })
     );
