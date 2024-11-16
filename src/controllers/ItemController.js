@@ -124,10 +124,13 @@ const ItemController = {
 
         discounts.push({
           discount_type: discount.discount_type,
+          discountValue: discount.discount_value,
           discountAmount: discountAmount,
           discountPrice: discountPrice,
         });
       });
+
+      console.log(discounts);
 
       return {
         ...item.toJSON(),

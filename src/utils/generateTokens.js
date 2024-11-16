@@ -7,6 +7,7 @@ module.exports = {
       {
         id: user.id,
         name: user.name,
+        phone_number: user.phone_number,
         percentage: user.percentage,
         is_approve: user.is_approve,
       },
