@@ -54,6 +54,7 @@ const ItemController = {
       limit,
       offset,
       user,
+      where,
     });
 
     const filteredItems = filtered(items, user);
@@ -129,8 +130,6 @@ const ItemController = {
           discountPrice: discountPrice,
         });
       });
-
-      console.log(discounts);
 
       return {
         ...item.toJSON(),

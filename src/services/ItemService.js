@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const Item = require("../models/Item");
 class ItemService {
   static async getItems({ where = {}, include, limit, offset, user }) {
+    console.log("where: ", where);
     const { count, rows: items } = await Item.findAndCountAll({
       where,
       include,
