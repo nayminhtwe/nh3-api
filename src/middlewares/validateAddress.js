@@ -6,12 +6,6 @@ const validateAddress = {
   ],
 
   validateBody: [
-    body("app_user_id")
-      .notEmpty()
-      .withMessage("app_user_id is required")
-      .isInt()
-      .withMessage("app_user_id must be an integer"),
-
     body("buildingNo")
       .notEmpty()
       .withMessage("buildingNo is required")

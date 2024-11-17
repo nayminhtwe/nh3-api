@@ -3,12 +3,25 @@ const AddressController = require("../controllers/AddressController");
 const router = express.Router();
 const validator = require("../utils/validator");
 const { validateId, validateBody } = require("../middlewares/validateAddress");
+const auth = require("../middlewares/auth");
 
 router.get("/addresses", AddressController.find);
 
-router.post("/addresses", validateBody, validator, AddressController.create);
+router.post(
+  "/addresses",
+  validateBody,
+  validator,
+  auth,
+  AddressController.create
+);
 
-router.put("/addresses/:id", validateId, validator, AddressController.update);
+router.put(
+  "/addresses/:id",
+  validateId,
+  validator,
+  auth,
+  AddressController.update
+);
 
 router.delete(
   "/addresses/:id",

@@ -7,7 +7,9 @@ const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.get("/items", ItemController.find);
+router.get("/items", auth, ItemController.find);
+
+router.get("/items/:id", auth, ItemController.show);
 
 router.get("/discount-items", auth, ItemController.getDiscountItems);
 

@@ -8,8 +8,6 @@ const paginate = (req, count, limit) => {
     req.originalUrl.split("?")[0]
   }`;
 
-  console.log("url: ", url);
-
   return {
     meta: {
       page,
@@ -23,20 +21,26 @@ const paginate = (req, count, limit) => {
   };
 };
 
-const filtered = (items, user) => {
-  const filteredItems = items.map((item) => {
-    if (item.is_universal) {
-      item.car = null;
-    }
+const filtered = async (items, user) => {
+  if (Array.isArray(items)) {
+    return items.map((item) => filteredProcess(item, user));
+  }
 
-    if (!user.is_approve) {
-      item.price = "*****";
-    }
+  if (typeof items === "object") {
+    return filteredProcess(items, user);
+  }
+};
 
-    return item;
-  });
+const filteredProcess = (item, user) => {
+  if (item.is_universal) {
+    item.car = null;
+  }
 
-  return filteredItems;
+  if (!user.is_approve) {
+    item.price = "*****";
+  }
+
+  return item;
 };
 
 module.exports = {

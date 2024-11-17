@@ -14,18 +14,11 @@ const AddressController = {
   }),
 
   create: asyncHandler(async (req, res) => {
-    const {
-      app_user_id,
-      buildingNo,
-      floor,
-      isSave,
-      unit,
-      addressTitle,
-      street,
-    } = req.body;
+    const { user } = req;
+    const { buildingNo, floor, isSave, unit, addressTitle, street } = req.body;
 
     const result = await Address.create({
-      app_user_id,
+      app_user_id: user.id,
       buildingNo,
       floor,
       isSave,
@@ -42,6 +35,17 @@ const AddressController = {
 
   update: asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const { buildingNo, floor, isSave, unit, addressTitle, street } = req.body;
+
+    const updatedData = {
+      buildingNo,
+      floor,
+      isSave,
+      unit,
+      addressTitle,
+      street,
+      user: req.user,
+    };
 
     const address = await Address.findByPk(id);
 
@@ -49,21 +53,9 @@ const AddressController = {
       return res.status(404).json({ msg: "Address not found" });
     }
 
-    const allowFields = [
-      "app_user_id",
-      "buildingNo",
-      "floor",
-      "isSave",
-      "unit",
-      "addressTitle",
-      "street",
-    ];
+    await address.update(updatedData);
 
-    const filteredBody = await filterAllowFields(req.body, allowFields);
-
-    await address.update(filteredBody);
-
-    return res.json({ msg: "update success" });
+    return res.json({ msg: "Update successful" });
   }),
 
   destroy: asyncHandler(async (req, res) => {

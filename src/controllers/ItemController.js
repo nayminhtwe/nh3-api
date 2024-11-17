@@ -13,7 +13,19 @@ const Discount = require("../models/Discount");
 const ItemService = require("../services/ItemService");
 const { filtered, paginate } = require("../utils/itemUtils");
 
-const includeFields = [MainCategory, ItemImage];
+const includeFields = [
+  MainCategory,
+  ItemImage,
+  Discount,
+  {
+    model: Car,
+    include: [
+      { model: Company, attributes: ["name"] },
+      { model: CarModel, attributes: ["name"] },
+      { model: Engine, attributes: ["enginepower"] },
+    ],
+  },
+];
 
 const ItemController = {
   find: asyncHandler(async (req, res) => {
@@ -33,31 +45,28 @@ const ItemController = {
       where.main_category_id = category;
     }
 
-    const include = [
-      ...includeFields,
-      {
-        model: Car,
-        include: [
-          { model: Company, attributes: ["name"] },
-          { model: CarModel, attributes: ["name"] },
-          { model: Engine, attributes: ["enginepower"] },
-        ],
-      },
-    ];
-
     const limit = 10;
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
 
     const { count, items } = await ItemService.getItems({
-      include,
+      include: [
+        ...includeFields,
+        {
+          model: Discount,
+          required: false,
+          attributes: ["id", "discount_type", "discount_value"],
+        },
+      ],
       limit,
       offset,
       user,
       where,
     });
 
-    const filteredItems = filtered(items, user);
+    const discountedItems = ItemService.calculateDiscountItems(items);
+
+    const filteredItems = await filtered(discountedItems, user);
 
     const pagination = paginate(req, count, limit);
 
@@ -76,69 +85,24 @@ const ItemController = {
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
 
-    const include = [
-      ...includeFields,
-      {
-        model: Car,
-        include: [
-          { model: Company, attributes: ["name"] },
-          { model: CarModel, attributes: ["name"] },
-          { model: Engine, attributes: ["enginepower"] },
-        ],
-      },
-      {
-        model: Discount,
-        where: { is_active: true },
-        requried: true,
-        attributes: ["discount_type", "discount_value"],
-      },
-    ];
-
     const { count, items } = await ItemService.getItems({
-      include,
+      include: [
+        ...includeFields,
+        {
+          model: Discount,
+          where: { is_active: true },
+          required: true,
+          attributes: ["id", "discount_type", "discount_value"],
+        },
+      ],
       limit,
       offset,
       user,
     });
 
-    const discountedItems = items.map((item) => {
-      let itemPrice = parseFloat(item.price);
+    const discountedItems = ItemService.calculateDiscountItems(items);
 
-      const discounts = [];
-
-      item.discounts.forEach((discount) => {
-        let discountAmount = 0;
-        let discountPrice = itemPrice;
-
-        if (discount.discount_type === "percentage") {
-          discountAmount =
-            itemPrice * (parseFloat(discount.discount_value) / 100);
-        } else if (discount.discount_type === "fixed") {
-          discountAmount = parseFloat(discount.discount_value);
-        }
-
-        discountAmount = Math.min(discountAmount, itemPrice);
-        discountPrice = itemPrice - discountAmount;
-
-        discountAmount = Math.round(discountAmount * 100) / 100;
-        discountPrice = Math.round(discountPrice * 100) / 100;
-
-        discounts.push({
-          discount_type: discount.discount_type,
-          discountValue: discount.discount_value,
-          discountAmount: discountAmount,
-          discountPrice: discountPrice,
-        });
-      });
-
-      return {
-        ...item.toJSON(),
-        price: itemPrice,
-        discounts: discounts,
-      };
-    });
-
-    const filteredItems = filtered(discountedItems, user);
+    const filteredItems = await filtered(discountedItems, user);
     const pagination = paginate(req, count, limit);
 
     return res.json(
@@ -147,6 +111,30 @@ const ItemController = {
         data: filteredItems,
       })
     );
+  }),
+
+  show: asyncHandler(async (req, res) => {
+    const { user } = req;
+    const include = [
+      ...includeFields,
+      {
+        model: Discount,
+        required: false,
+        attributes: ["id", "discount_type", "discount_value"],
+      },
+    ];
+
+    const item = await ItemService.getItem(req.params.id, user, include);
+
+    if (!item) {
+      return res.status(404).json({ msg: "Item not found!" });
+    }
+
+    const discountedItems = ItemService.calculateDiscountItems(item);
+
+    const filteredItem = await filtered(discountedItems, user);
+
+    return res.json(new ItemResource(filteredItem).exec());
   }),
 
   create: asyncHandler(async (req, res) => {
