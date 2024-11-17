@@ -36,9 +36,9 @@ const filteredProcess = (item, user) => {
     item.car = null;
   }
 
-  if (!user.is_approve) {
-    item.price = "*****";
-  }
+  // if (!user.is_approve) {
+  //   item.price = "*****";
+  // }
 
   return item;
 };
