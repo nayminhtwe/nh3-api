@@ -4,14 +4,15 @@ const MainCategory = require("../models/MainCategory");
 const filterAllowFields = require("../utils/filterAllowFields");
 const ItemImage = require("../models/ItemImage");
 const ItemResource = require("../resources/ItemResource");
-const { Sequelize, Model } = require("sequelize");
+const { Sequelize, Model, Op } = require("sequelize");
 const Car = require("../models/Car");
 const Company = require("../models/Company");
 const Engine = require("../models/Engine");
 const CarModel = require("../models/CarModel");
 const Discount = require("../models/Discount");
 const ItemService = require("../services/ItemService");
-const { filtered, paginate } = require("../utils/itemUtils");
+const { filtered, paginate, filteredQuery } = require("../utils/itemUtils");
+const { validateRequest } = require("twilio/lib/webhooks/webhooks");
 
 const includeFields = [
   MainCategory,
@@ -30,20 +31,8 @@ const includeFields = [
 const ItemController = {
   find: asyncHandler(async (req, res) => {
     const { user } = req;
-    const { feature, universal, category } = req.query;
-    const where = {};
 
-    if (feature === "true") {
-      where.is_feature = true;
-    }
-
-    if (universal === "true") {
-      where.is_universal = true;
-    }
-
-    if (category) {
-      where.main_category_id = category;
-    }
+    const where = filteredQuery(req.query);
 
     const limit = 10;
     const page = parseInt(req.query.page) || 1;

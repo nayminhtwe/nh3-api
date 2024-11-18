@@ -25,6 +25,7 @@ class ItemService {
           "price",
         ],
       ],
+      distinct: true,
     });
 
     return { count, items };
