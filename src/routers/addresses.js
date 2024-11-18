@@ -5,7 +5,7 @@ const validator = require("../utils/validator");
 const { validateId, validateBody } = require("../middlewares/validateAddress");
 const auth = require("../middlewares/auth");
 
-router.get("/addresses", AddressController.find);
+router.get("/addresses", auth, AddressController.find);
 
 router.post(
   "/addresses",

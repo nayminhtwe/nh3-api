@@ -8,9 +8,14 @@ const include = [User];
 
 const AddressController = {
   find: asyncHandler(async (req, res) => {
-    const addresss = await Address.findAll({ include });
+    const { user } = req;
 
-    return res.json(AddressResource.collection(addresss));
+    const addresses = await Address.findAll({
+      where: { app_user_id: user.id },
+      include,
+    });
+
+    return res.json(AddressResource.collection(addresses));
   }),
 
   create: asyncHandler(async (req, res) => {
