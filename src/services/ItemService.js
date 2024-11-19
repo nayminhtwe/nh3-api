@@ -20,7 +20,7 @@ class ItemService {
           Sequelize.literal(
             user.percentage === 0
               ? "price"
-              : `ROUND(price / ${user.percentage}, 2)`
+              : `ROUND(price - (price * (${user.percentage} / 100)), 2)`
           ),
           "price",
         ],

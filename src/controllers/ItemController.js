@@ -12,7 +12,6 @@ const CarModel = require("../models/CarModel");
 const Discount = require("../models/Discount");
 const ItemService = require("../services/ItemService");
 const { filtered, paginate, filteredQuery } = require("../utils/itemUtils");
-const { validateRequest } = require("twilio/lib/webhooks/webhooks");
 
 const includeFields = [
   MainCategory,
