@@ -32,7 +32,17 @@ const OrderController = {
 
   show: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const order = await Order.findByPk(id, { include: User });
+    const order = await Order.findByPk(id, {
+      include: [
+        ...orderIncludes,
+        {
+          model: OrderItem,
+          include: [
+            { model: Item, attributes: ["id", "name", "price", "OE_NO"] },
+          ],
+        },
+      ],
+    });
 
     return res.json(order);
   }),
@@ -42,62 +52,74 @@ const OrderController = {
 
     const { address_id, promotion_id, deliveryfees, items } = req.body;
 
-    try {
-      const { user } = req;
+    const { user } = req;
 
-      let totalOrderprice = 0;
-      let orderItems = [];
+    if (!user.is_approve) {
+      return res.status(403).json({ msg: "Your account is not approved yet." });
+    }
 
-      for (const itemData of items) {
-        const item = await Item.findByPk(itemData.item_id);
+    let totalOrderprice = 0;
+    let orderItems = [];
 
-        if (!item) return res.status(404).json({ msg: "Item not found" });
+    for (const itemData of items) {
+      const item = await Item.findByPk(itemData.item_id);
 
-        const quantity = itemData.quantity;
+      if (!item) return res.status(404).json({ msg: "Item not found" });
 
-        if (item.quantity < quantity) {
-          return res
-            .status(400)
-            .json({ msg: `No enough stock for ${item.name}` });
-        }
+      const quantity = itemData.quantity;
 
-        const subprice = item.price;
-        const totalPrice = subprice * quantity;
-
-        totalOrderprice += totalPrice;
-
-        orderItems.push({
-          item_id: item.id,
-          subprice: subprice,
-          totalprice: totalPrice,
-          quantity: quantity,
-        });
-
-        item.quantity -= quantity;
-        await item.save();
+      if (item.quantity < quantity) {
+        return res
+          .status(400)
+          .json({ msg: `No enough stock for ${item.name}` });
       }
 
-      const order = await Order.create({
-        address_id,
-        orderstatus_id: 1,
-        promotion_id,
-        quantity: items.length,
-        app_user_id: user.id,
-        deliveryfees,
-        totalprice: totalOrderprice,
+      const subprice = item.price;
+      const totalPrice = subprice * quantity;
+
+      totalOrderprice += totalPrice;
+
+      orderItems.push({
+        item_id: item.id,
+        subprice: subprice,
+        totalprice: totalPrice,
+        quantity: quantity,
       });
 
-      const createOrderItems = orderItems.map((item) => ({
-        ...item,
-        order_id: order.id,
-      }));
-
-      await OrderItem.bulkCreate(createOrderItems);
-
-      return res.json(order);
-    } catch (error) {
-      return res.status(400).json({ msg: error.message });
+      item.quantity -= quantity;
+      await item.save();
     }
+
+    const createdOrder = await Order.create({
+      address_id,
+      orderstatus_id: 1,
+      promotion_id,
+      quantity: items.length,
+      app_user_id: user.id,
+      deliveryfees,
+      totalprice: totalOrderprice,
+    });
+
+    const createOrderItems = orderItems.map((item) => ({
+      ...item,
+      order_id: createdOrder.id,
+    }));
+
+    await OrderItem.bulkCreate(createOrderItems);
+
+    const order = await Order.findByPk(createdOrder.id, {
+      include: [
+        ...orderIncludes,
+        {
+          model: OrderItem,
+          include: [
+            { model: Item, attributes: ["id", "name", "price", "OE_NO"] },
+          ],
+        },
+      ],
+    });
+
+    return res.json(new OrderResource(order).exec());
   }),
 
   // update: asyncHandler(async (req, res) => {
