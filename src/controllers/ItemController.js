@@ -81,9 +81,8 @@ const ItemController = {
     const nextPage = page < totalPages ? page + 1 : null;
     const prevPage = page > 1 ? page - 1 : null;
 
-    const url = `${req.protocol}://${req.get("host")}${
-      req.originalUrl.split("?")[0]
-    }`;
+    const url = `${req.protocol}://${req.get("host")}${req.originalUrl.split("?")[0]
+      }`;
 
     return res.json(
       ItemResource.collection({
@@ -249,6 +248,28 @@ const ItemController = {
 
     return res.sendStatus(204);
   }),
+
+  filterItem: asyncHandler(async (req, res) => {
+    const { modelId,category_id } = req.body;
+
+    const items = await Item.findAll({
+      where: {
+        main_category_id: category_id
+      },
+      include: {
+        model: Car,
+        through: {
+          attributes: []
+        },
+        where: {
+          model_id: modelId
+        }
+      }
+    });
+
+    return res.json(items);
+  }),
+
 };
 
 module.exports = ItemController;

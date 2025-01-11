@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 async function sendSMS(phone_number, otp_code, brandName) {
+  const fetch = (await import('node-fetch')).default;
   const api = process.env.SMS_API;
   const authKey = process.env.AUTH_KEY;
 
