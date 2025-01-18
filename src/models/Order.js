@@ -33,10 +33,12 @@ const Order = sequelize.define(
     },
     promotion_id: {
       type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
       references: {
         model: Promotion,
         key: "id",
       },
+      onDelete: 'SET NULL',
     },
     app_user_id: {
       type: DataTypes.BIGINT.UNSIGNED,
