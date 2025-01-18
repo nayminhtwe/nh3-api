@@ -93,7 +93,7 @@ const OrderController = {
     const createdOrder = await Order.create({
       address_id,
       orderstatus_id: 1,
-      promotion_id,
+      // promotion_id,
       quantity: items.length,
       app_user_id: user.id,
       deliveryfees,
