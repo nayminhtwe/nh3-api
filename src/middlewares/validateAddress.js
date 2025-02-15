@@ -12,7 +12,7 @@ const validateAddress = {
       .isString()
       .withMessage("buildingNo must be a string"),
 
-    body("floor").notEmpty().isString("floor must be a string"),
+    // body("floor").notEmpty().isString("floor must be a string"),
 
     body("isSave")
       .notEmpty()
