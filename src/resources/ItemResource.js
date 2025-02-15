@@ -37,7 +37,7 @@ class ItemResource extends Resource {
         this.discounts.map((discount) => ({
           id: discount.id,
           type: discount.discount_type,
-          discountValue: this.price != -1 ? discount.discountValue : "**",
+          discountValue: discount.discountValue,
           discountAmount: this.price != -1 ? discount.discountAmount : "****",
           discountPrice: this.price != -1 ? discount.discountPrice : "****",
         })),
