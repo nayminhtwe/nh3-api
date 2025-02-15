@@ -223,6 +223,25 @@ const ItemController = {
 
     return res.sendStatus(204);
   }),
+
+  filterItem: asyncHandler(async (req, res) => {
+    const { modelId,category_id } = req.body;
+    const items = await Item.findAll({
+      where: {
+        main_category_id: category_id
+      },
+      include: {
+        model: Car,
+        through: {
+          attributes: []
+        },
+        where: {
+          model_id: modelId
+        }
+      }
+    });
+    return res.json(items);
+  }),
 };
 
 module.exports = ItemController;
