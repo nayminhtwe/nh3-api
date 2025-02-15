@@ -39,7 +39,7 @@ const User = sequelize.define(
       defaultValue: 0,
     },
     is_approve: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.TINYINT,
       defaultValue: false,
     },
   },

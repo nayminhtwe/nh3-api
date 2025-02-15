@@ -43,6 +43,11 @@ async function auth(req, res, next) {
       });
     }
 
+    const userData = await User.findByPk(user.id);
+
+    user.percentage = userData.percentage
+    user.is_approve = userData.is_approve
+
     req.user = user;
     next();
   } catch (e) {

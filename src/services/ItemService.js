@@ -18,9 +18,13 @@ class ItemService {
         "OE_NO",
         [
           Sequelize.literal(
-            user.percentage === 0
-              ? "price"
-              : `ROUND(price - (price * (${user.percentage} / 100)), 2)`
+            user.is_approve === 1
+              ? (user.percentage === 0 ? "price" : `ROUND(price - (price * (${user.percentage} / 100)), 2)`)
+              : -1
+
+            // user.percentage === 0
+            //   ? "price"
+            //   : `ROUND(price - (price * (${user.percentage} / 100)), 2)`
           ),
           "price",
         ],
