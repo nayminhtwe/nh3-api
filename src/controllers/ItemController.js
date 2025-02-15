@@ -33,6 +33,8 @@ const ItemController = {
 
     const where = filteredQuery(req.query);
 
+    if(!where.main_category_id) delete where.main_category_id
+
     const limit = 10;
     const page = parseInt(req.query.page) || 1;
     const offset = (page - 1) * limit;
