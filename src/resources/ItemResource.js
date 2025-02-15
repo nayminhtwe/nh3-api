@@ -10,7 +10,7 @@ class ItemResource extends Resource {
       isFeature: this.is_feature,
       isUniversal: this.is_universal,
       OE_NO: this.OE_NO,
-      price: this.price,
+      price: this.price != -1 ? this.price : "****",
       description: this.description,
       main_category: this.main_category && {
         id: this.main_category.id,
@@ -37,9 +37,9 @@ class ItemResource extends Resource {
         this.discounts.map((discount) => ({
           id: discount.id,
           type: discount.discount_type,
-          discountValue: discount.discountValue,
-          discountAmount: discount.discountAmount,
-          discountPrice: discount.discountPrice,
+          discountValue: this.price != -1 ? discount.discountValue : "**",
+          discountAmount: this.price != -1 ? discount.discountAmount : "****",
+          discountPrice: this.price != -1 ? discount.discountPrice : "****",
         })),
     };
   }
