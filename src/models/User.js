@@ -58,7 +58,8 @@ User.generateOTP = async (phone_number) => {
   const OTPExists = await Otp.findOne({ where: { phone_number } });
 
   if (OTPExists) {
-    throw createError("OTP with this phone number already exists", 400);
+    await OTPExists.destroy()
+    // throw createError("OTP with this phone number already exists", 400);
   }
 
   // generate a secret key
