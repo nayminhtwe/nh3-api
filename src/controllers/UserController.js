@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
+const Order = require("../models/Order");
 const bcrypt = require("bcrypt");
 const { generateAccessAndRefreshToken } = require("../utils/generateTokens");
 
@@ -12,7 +13,10 @@ const { sendSMS } = require("../utils/sendSMS");
 module.exports = {
   verify: asyncHandler(async (req, res) => {
     const { user } = req;
-    return res.json({ status: "active", user });
+    const count = await Order.count({
+      where: { app_user_id: user.id },
+    });
+    return res.json({ status: "active", count, user });
   }),
 
   find: asyncHandler(async (req, res) => {
