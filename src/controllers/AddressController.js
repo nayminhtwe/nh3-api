@@ -57,10 +57,12 @@ const AddressController = {
     if (!address) {
       return res.status(404).json({ msg: "Address not found" });
     }
-
-    await address.update(updatedData);
-
-    return res.json({ msg: "Update successful" });
+    if(address.app_user_id == req.user.id) {
+      await address.update(updatedData);
+      return res.json({ msg: "Update successful" });
+    } else {
+      return res.status(400).json({ msg: "Not Your Address" });
+    }
   }),
 
   destroy: asyncHandler(async (req, res) => {

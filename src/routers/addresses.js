@@ -15,7 +15,7 @@ router.post(
   AddressController.create
 );
 
-router.put(
+router.post(
   "/addresses/:id",
   validateId,
   validator,
