@@ -15,6 +15,10 @@ const Order = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
+    order_number: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     address_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,

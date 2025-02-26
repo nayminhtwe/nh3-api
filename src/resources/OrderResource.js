@@ -4,6 +4,7 @@ class OrderResource extends Resource {
   toArray() {
     return {
       id: Number(this.id),
+      order_number: this.order_number,
       cart_id: this.cart_id,
       address_id: this.address_id,
       order_status_id: this.orderstatus_id,

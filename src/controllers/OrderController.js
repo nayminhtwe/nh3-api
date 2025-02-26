@@ -90,6 +90,7 @@ const OrderController = {
       await item.save();
     }
 
+
     const createdOrder = await Order.create({
       address_id,
       orderstatus_id: 1,
@@ -99,6 +100,12 @@ const OrderController = {
       deliveryfees,
       totalprice: totalOrderprice,
     });
+
+    const year = new Date().getFullYear().toString().substr(-2)
+    let orderNumber = "" +createdOrder.id
+    let pad = "0000"
+    createdOrder.order_number = 'ORD-' + year + pad.substring(0, pad.length - orderNumber.length) + orderNumber
+    await createdOrder.save()
 
     const createOrderItems = orderItems.map((item) => ({
       ...item,
