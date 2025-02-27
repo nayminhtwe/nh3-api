@@ -62,6 +62,9 @@ class OrderResource extends Resource {
                   id: orderItem.item.id,
                   name: orderItem.item.name,
                   OE_NO: orderItem.item.OE_NO,
+                  item_images: orderItem.item.item_images && orderItem.item.item_images.length
+                  ? orderItem.item.item_images 
+                  : []
                 }
               : null,
           }))

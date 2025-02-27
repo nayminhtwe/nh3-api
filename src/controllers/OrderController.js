@@ -6,6 +6,7 @@ const OrderStatus = require("../models/OrderStatus");
 const Promotion = require("../models/Promotion");
 const User = require("../models/User");
 const Item = require("../models/Item");
+const ItemImage = require("../models/ItemImage");
 const OrderItem = require("../models/OrderItem");
 const checkPendingStatus = require("../utils/checkPendingStatus");
 
@@ -21,7 +22,12 @@ const OrderController = {
         {
           model: OrderItem,
           include: [
-            { model: Item, attributes: ["id", "name", "price", "OE_NO"] },
+            {
+              model: Item, attributes: ["id", "name", "price", "OE_NO"],
+              include: [
+                { model: ItemImage, attributes: ["path"]},
+              ]
+            },
           ],
         },
       ],
@@ -102,7 +108,7 @@ const OrderController = {
     });
 
     const year = new Date().getFullYear().toString().substr(-2)
-    let orderNumber = "" +createdOrder.id
+    let orderNumber = "" + createdOrder.id
     let pad = "0000"
     createdOrder.order_number = 'ORD-' + year + pad.substring(0, pad.length - orderNumber.length) + orderNumber
     await createdOrder.save()
@@ -120,7 +126,11 @@ const OrderController = {
         {
           model: OrderItem,
           include: [
-            { model: Item, attributes: ["id", "name", "price", "OE_NO"] },
+            { model: Item, attributes: ["id", "name", "price", "OE_NO"], 
+              include: [
+                { model: ItemImage, attributes: ["path"]},
+              ]
+            },
           ],
         },
       ],
