@@ -176,7 +176,7 @@ User.register = async ({
   const { access_token, refresh_token } = await generateAccessAndRefreshToken(
     user
   );
-  
+
 
   await user.update({ where: { refresh_token } });
 
@@ -220,10 +220,28 @@ User.reset = async ({
   const { access_token, refresh_token } = await generateAccessAndRefreshToken(
     user
   );
-  
+
 
   await user.update({ where: { refresh_token } });
 
   return { user, access_token, refresh_token };
+};
+
+User.update = async ({
+  id,
+  password,
+}) => {
+  const user = await User.findByPk(id);
+
+  user.password = await bcrypt.hash(password, 10)
+
+  const { access_token, refresh_token } = await generateAccessAndRefreshToken(
+    user
+  );
+
+
+  await user.update({ where: { refresh_token } });
+
+  return { updated_user: user, access_token, refresh_token };
 };
 module.exports = User;

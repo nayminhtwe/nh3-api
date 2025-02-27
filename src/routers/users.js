@@ -17,6 +17,8 @@ const validator = require("../utils/validator");
 
 router.get("/verify", auth, UserController.verify);
 
+router.post("/update", auth, UserController.update);
+
 router.get("/users", UserController.find);
 
 router.post("/otp-request", validateOtp, validator, UserController.requestOtp);

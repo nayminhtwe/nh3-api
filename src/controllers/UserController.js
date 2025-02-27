@@ -19,6 +19,19 @@ module.exports = {
     return res.json({ status: "active", count, user });
   }),
 
+  update: asyncHandler(async (req, res) => {
+    const { user } = req;
+    const id = user.id
+    const { password } = req.body
+
+    const count = await Order.count({
+      where: { app_user_id: user.id },
+    });
+
+    const { updated_user, access_token, refresh_token } = await User.update({ id, password });
+    return res.json({ user: updated_user, access_token, refresh_token });
+  }),
+
   find: asyncHandler(async (req, res) => {
     const users = await User.findAll();
     return res.json(UserResource.collection(users));
