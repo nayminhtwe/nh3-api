@@ -28,7 +28,7 @@ module.exports = {
       where: { app_user_id: user.id },
     });
 
-    const { updated_user, access_token, refresh_token } = await User.update({ id, password });
+    const { updated_user, access_token, refresh_token } = await User.updatePassword({ id, password });
     return res.json({ user: updated_user, access_token, refresh_token });
   }),
 

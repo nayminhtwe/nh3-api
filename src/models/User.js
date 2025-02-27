@@ -227,13 +227,15 @@ User.reset = async ({
   return { user, access_token, refresh_token };
 };
 
-User.update = async ({
+User.updatePassword = async ({
   id,
   password,
 }) => {
   const user = await User.findByPk(id);
 
   user.password = await bcrypt.hash(password, 10)
+
+  await user.save();
 
   const { access_token, refresh_token } = await generateAccessAndRefreshToken(
     user
