@@ -6,6 +6,7 @@ const auth = require("../middlewares/auth");
 
 const {
   validateRegister,
+  validateReset,
   validateLogin,
   validateId,
   validateOtp,
@@ -23,6 +24,8 @@ router.post("/otp-request", validateOtp, validator, UserController.requestOtp);
 router.post("/otp-reset", validateOtp, validator, UserController.resetOtp);
 
 router.post("/register", validateRegister, validator, UserController.register);
+
+router.post("/reset", validateReset, validator, UserController.otpVerify);
 
 router.post("/login", validateLogin, validator, UserController.login);
 

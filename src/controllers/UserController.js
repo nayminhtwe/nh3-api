@@ -60,6 +60,23 @@ module.exports = {
     return res.status(201).json({ user, access_token, refresh_token });
   }),
 
+  otpVerify: asyncHandler(async (req, res) => {
+    const { phone_number, otp_code, transaction_id } = req.body;
+
+    if (!phone_number) {
+      return res.status(400).json({ error: "Phone number is required" });
+    }
+    const validateUser = await User.findOne({ where: { phone_number } });
+
+    const name = validateUser.name
+
+    const password = validateUser.password
+
+    const { user, access_token, refresh_token } = await User.reset({ phone_number, otp_code, transaction_id, name, password });
+
+    return res.status(201).json({ user, access_token });
+  }),
+
   login: asyncHandler(async (req, res) => {
     const { phone_number, password } = req.body;
 

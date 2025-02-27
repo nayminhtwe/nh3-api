@@ -22,6 +22,12 @@ const validateRegister = [
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
 ];
+
+const validateReset = [
+  body("transaction_id").notEmpty().isString(),
+  body("otp_code").notEmpty().isString(),
+  body("phone_number").notEmpty().isMobilePhone(),
+];
 const validateOtp = [
   body("phone_number")
     .notEmpty()
@@ -53,6 +59,7 @@ const validatePercentage = [
 module.exports = {
   validateLogin,
   validateRegister,
+  validateReset,
   validatePassword,
   validateId,
   validateOtp,

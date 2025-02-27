@@ -176,10 +176,54 @@ User.register = async ({
   const { access_token, refresh_token } = await generateAccessAndRefreshToken(
     user
   );
+  
 
   await user.update({ where: { refresh_token } });
 
   return { user, access_token, refresh_token };
 };
 
+
+User.reset = async ({
+  phone_number,
+  otp_code,
+  transaction_id,
+  name,
+  password,
+}) => {
+  const OTP = await Otp.findOne({ where: { phone_number, transaction_id } });
+
+  if (OTP) {
+    // if OTP is expired
+    if (OTP.expires_at.getTime() < Date.now()) {
+      await OTP.destroy();
+      throw createError("OTP expired", 400);
+    }
+
+    // if OTP code and otp_code are not same
+    if (!(await bcrypt.compare(otp_code, OTP.otp_code))) {
+      throw createError("OTP code invalid", 400);
+    }
+  } else {
+    // if OTP is not found
+    throw createError("OTP not found", 404);
+  }
+
+  await OTP.destroy();
+
+  const user = await User.findOne({ where: { phone_number } });
+
+  if (!user) {
+    throw createError("Please register first", 400);
+  }
+
+  const { access_token, refresh_token } = await generateAccessAndRefreshToken(
+    user
+  );
+  
+
+  await user.update({ where: { refresh_token } });
+
+  return { user, access_token, refresh_token };
+};
 module.exports = User;
