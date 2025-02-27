@@ -31,6 +31,7 @@ const OrderController = {
           ],
         },
       ],
+      order: [['id', 'DESC']],
     });
 
     return res.json(OrderResource.collection(orders));
