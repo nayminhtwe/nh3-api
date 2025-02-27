@@ -86,17 +86,17 @@ const Order = sequelize.define(
   },
   {
     timestamps: false,
-    // createdAt: 'created_at',
-    // updatedAt: 'updated_at',
-    // hooks: {
-    //   beforeCreate: (order) => {
-    //     order.created_at = moment().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
-    //     order.updated_at = moment().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
-    //   },
-    //   beforeUpdate: (order) => {
-    //     order.updated_at = moment().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
-    //   }
-    // }
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    hooks: {
+      beforeCreate: (order) => {
+        order.created_at = moment().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+        order.updated_at = moment().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+      },
+      beforeUpdate: (order) => {
+        order.updated_at = moment().tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+      }
+    }
   }
 );
 
