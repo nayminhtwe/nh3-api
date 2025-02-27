@@ -71,7 +71,7 @@ const Order = sequelize.define(
       allowNull: false,
       get() {
         const rawValue = this.getDataValue('created_at');
-        return moment(rawValue).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+        return moment(rawValue).tz('Asia/Yangon').format('YYYY-MM-DD HH:mm:ss');
       }
     },
     updated_at: {
@@ -80,7 +80,7 @@ const Order = sequelize.define(
       allowNull: false,
       get() {
         const rawValue = this.getDataValue('updated_at');
-        return moment(rawValue).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+        return moment(rawValue).tz('Asia/Yangon').format('YYYY-MM-DD HH:mm:ss');
       }
     },
   },
