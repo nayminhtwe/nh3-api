@@ -4,6 +4,7 @@ const Cart = require("./Cart");
 const Address = require("./Address");
 const OrderStatus = require("./OrderStatus");
 const Promotion = require("./Promotion");
+const moment = require('moment-timezone');
 
 const User = require("./User");
 
@@ -68,11 +69,19 @@ const Order = sequelize.define(
       type: DataTypes.DATE,
       defaultValue: new Date(),
       allowNull: false,
+      get() {
+        const rawValue = this.getDataValue('created_at');
+        return moment(rawValue).tz('Asia/Yangon').format('YYYY-MM-DD HH:mm:ss');
+      }
     },
     updated_at: {
       type: DataTypes.DATE,
       defaultValue: new Date(),
       allowNull: false,
+      get() {
+        const rawValue = this.getDataValue('updated_at');
+        return moment(rawValue).tz('Asia/Yangon').format('YYYY-MM-DD HH:mm:ss');
+      }
     },
   },
   { timestamps: false }
