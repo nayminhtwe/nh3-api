@@ -20,6 +20,8 @@ router.get("/users", UserController.find);
 
 router.post("/otp-request", validateOtp, validator, UserController.requestOtp);
 
+router.post("/otp-reset", validateOtp, validator, UserController.resetOtp);
+
 router.post("/register", validateRegister, validator, UserController.register);
 
 router.post("/login", validateLogin, validator, UserController.login);

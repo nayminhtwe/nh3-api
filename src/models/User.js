@@ -92,6 +92,48 @@ User.generateOTP = async (phone_number) => {
   return { transaction_id, otp_code };
 };
 
+User.reGenerateOTP = async (phone_number) => {
+  const user = await User.findOne({ where: { phone_number } });
+  if (!user) throw createError("User have not registered. Please register", 400);
+
+  // validate otp is exists with phone number
+  const OTPExists = await Otp.findOne({ where: { phone_number } });
+
+  if (OTPExists) {
+    await OTPExists.destroy()
+    // throw createError("OTP with this phone number already exists", 400);
+  }
+
+  // generate a secret key
+  const secret = speakeasy.generateSecret();
+
+  // generate a otp code
+  const otp_code = speakeasy.totp({
+    secret: secret.base32,
+    encoding: "base32",
+    digits: 6,
+  });
+
+  // hashed the otp code to store the db
+  const hashedOTP = await bcrypt.hash(otp_code, 10);
+
+  // generate a transaction_id for one_time_passwords
+  const transaction_id = generateTranscationId();
+
+  // set the expire time for otp
+  const expires_at = new Date(Date.now() + 5 * 60 * 1000);
+
+  await Otp.create({
+    phone_number,
+    otp_code: hashedOTP,
+    transaction_id,
+    enabled: true,
+    expires_at,
+  });
+
+  return { transaction_id, otp_code };
+};
+
 User.register = async ({
   phone_number,
   otp_code,

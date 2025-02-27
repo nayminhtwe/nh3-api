@@ -39,6 +39,21 @@ module.exports = {
     return res.json({ phone_number, transaction_id });
   }),
 
+  resetOtp: asyncHandler(async (req, res) => {
+    const { phone_number } = req.body;
+
+    if (!phone_number) {
+      return res.status(400).json({ error: "Phone number is required" });
+    }
+
+    const { transaction_id, otp_code } = await User.reGenerateOTP(phone_number);
+
+    // send sms
+    await sendSMS(phone_number, otp_code, "L.K.B.NH3");
+
+    return res.json({ phone_number, transaction_id });
+  }),
+
   register: asyncHandler(async (req, res) => {
     const { user, access_token, refresh_token } = await User.register(req.body);
 
