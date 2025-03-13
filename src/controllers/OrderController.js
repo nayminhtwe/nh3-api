@@ -70,31 +70,33 @@ const OrderController = {
     let orderItems = [];
 
     for (const itemData of items) {
-      const item = await Item.findByPk(itemData.item_id, {
-        include: [{ model: Discount, attributes: ["discount_type", "discount_value"] }]
-      });
+      const item = await Item.findByPk(itemData.item_id);
 
       if (!item) return res.status(404).json({ msg: "Item not found" });
 
       const quantity = itemData.quantity;
 
       if (item.quantity < quantity) {
-        return res
-          .status(400)
-          .json({ msg: `No enough stock for ${item.name}` });
+        return res.status(400).json({ msg: `No enough stock for ${item.name}` });
       }
 
       // Calculate the price after applying user percentage
       const priceAfterUserPercentage = item.price - (item.price * (user.percentage / 100));
 
+      // Query the Discount model manually
+      const discount = await Discount.findOne({
+        where: { item_id: item.id },
+        attributes: ["discount_type", "discount_value"],
+      });
+
       // Calculate the discounted price
       let discountedPrice = priceAfterUserPercentage;
-      if (item.discount) {
-        const discount = item.discount.discount_value || 0; // Use 0 if discount is null or undefined
-        if (item.discount.discount_type === 'percentage') {
-          discountedPrice = priceAfterUserPercentage - (priceAfterUserPercentage * (discount / 100));
-        } else if (item.discount.discount_type === 'fixed') {
-          discountedPrice = priceAfterUserPercentage - discount;
+      if (discount) {
+        const discountValue = discount.discount_value || 0; // Use 0 if discount is null or undefined
+        if (discount.discount_type === 'percentage') {
+          discountedPrice = priceAfterUserPercentage - (priceAfterUserPercentage * (discountValue / 100));
+        } else if (discount.discount_type === 'fixed') {
+          discountedPrice = priceAfterUserPercentage - discountValue;
         }
       }
 
