@@ -81,7 +81,7 @@ const OrderController = {
           .json({ msg: `No enough stock for ${item.name}` });
       }
 
-      const subprice = item.price;
+      const subprice = item.price - (item.price * (user.percentage / 100));
       const totalPrice = subprice * quantity;
 
       totalOrderprice += totalPrice;
