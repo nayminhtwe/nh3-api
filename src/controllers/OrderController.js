@@ -25,7 +25,7 @@ const OrderController = {
             {
               model: Item, attributes: ["id", "name", "price", "OE_NO"],
               include: [
-                { model: ItemImage, attributes: ["path"]},
+                { model: ItemImage, attributes: ["path"] },
               ]
             },
           ],
@@ -69,7 +69,9 @@ const OrderController = {
     let orderItems = [];
 
     for (const itemData of items) {
-      const item = await Item.findByPk(itemData.item_id);
+      const item = await Item.findByPk(itemData.item_id, {
+        include: [{ model: Discount, attributes: ["discount_type", "discount_value"] }]
+      });
 
       if (!item) return res.status(404).json({ msg: "Item not found" });
 
@@ -81,8 +83,21 @@ const OrderController = {
           .json({ msg: `No enough stock for ${item.name}` });
       }
 
-      const subprice = item.price - (item.price * (user.percentage / 100));
-      const totalPrice = subprice * quantity;
+      // Calculate the price after applying user percentage
+      const priceAfterUserPercentage = item.price - (item.price * (user.percentage / 100));
+
+      // Calculate the discounted price
+      let discountedPrice = priceAfterUserPercentage;
+      if (item.discount) {
+        const discount = item.discount.discount_value || 0; // Use 0 if discount is null or undefined
+        if (item.discount.discount_type === 'percentage') {
+          discountedPrice = priceAfterUserPercentage - (priceAfterUserPercentage * (discount / 100));
+        } else if (item.discount.discount_type === 'fixed') {
+          discountedPrice = priceAfterUserPercentage - discount;
+        }
+      }
+
+      const totalPrice = discountedPrice * quantity;
 
       totalOrderprice += totalPrice;
 
@@ -127,9 +142,10 @@ const OrderController = {
         {
           model: OrderItem,
           include: [
-            { model: Item, attributes: ["id", "name", "price", "OE_NO"], 
+            {
+              model: Item, attributes: ["id", "name", "price", "OE_NO"],
               include: [
-                { model: ItemImage, attributes: ["path"]},
+                { model: ItemImage, attributes: ["path"] },
               ]
             },
           ],
