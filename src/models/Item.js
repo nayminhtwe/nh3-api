@@ -94,6 +94,6 @@ Item.belongsTo(Statuses, {
   onDelete: "CASCADE",
 });
 
-Item.hasOne(Discount, { foreignKey: "item_id" });
+Item.hasMany(Discount, { foreignKey: "item_id", as: "discounts" });
 
 module.exports = Item;
