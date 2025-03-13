@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 const MainCategory = require("./MainCategory");
 const Statuses = require("./Statuses");
+const Discount = require("./Discount");
 
 const Item = sequelize.define(
   "item",
@@ -92,5 +93,7 @@ Item.belongsTo(Statuses, {
   foreignKey: "status_id",
   onDelete: "CASCADE",
 });
+
+Item.hasOne(Discount, { foreignKey: "item_id" });
 
 module.exports = Item;
