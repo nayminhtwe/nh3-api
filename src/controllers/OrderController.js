@@ -6,6 +6,7 @@ const OrderStatus = require("../models/OrderStatus");
 const Promotion = require("../models/Promotion");
 const User = require("../models/User");
 const Item = require("../models/Item");
+const Discount = require("../models/Discount");
 const ItemImage = require("../models/ItemImage");
 const OrderItem = require("../models/OrderItem");
 const checkPendingStatus = require("../utils/checkPendingStatus");
