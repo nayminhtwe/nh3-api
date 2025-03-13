@@ -104,7 +104,7 @@ const OrderController = {
 
       orderItems.push({
         item_id: item.id,
-        subprice: subprice,
+        subprice: discountedPrice,
         totalprice: totalPrice,
         quantity: quantity,
       });
