@@ -10,6 +10,7 @@ class ItemService {
       attributes: [
         "id",
         "name",
+        "quantity",
         "brandName",
         "description",
         "main_category_id",
@@ -42,6 +43,7 @@ class ItemService {
         "id",
         "name",
         "brandName",
+        "quantity",
         "description",
         "main_category_id",
         "is_feature",
