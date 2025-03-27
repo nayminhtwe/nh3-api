@@ -6,6 +6,7 @@ class ItemResource extends Resource {
       id: this.id,
       name: this.name,
       brandName: this.brandName,
+      quantity: this.quantity,
       main_category_id: this.main_category_id,
       isFeature: this.is_feature,
       isUniversal: this.is_universal,
