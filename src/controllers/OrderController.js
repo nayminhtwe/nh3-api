@@ -10,6 +10,7 @@ const Discount = require("../models/Discount");
 const ItemImage = require("../models/ItemImage");
 const OrderItem = require("../models/OrderItem");
 const checkPendingStatus = require("../utils/checkPendingStatus");
+const { sendOrder } = require("../utils/sendOrder");
 
 const orderIncludes = [OrderStatus, Promotion, Address, User];
 
@@ -138,6 +139,9 @@ const OrderController = {
     }));
 
     await OrderItem.bulkCreate(createOrderItems);
+
+    // send sms
+    await sendOrder(orderItems.length, totalOrderprice);
 
     const order = await Order.findByPk(createdOrder.id, {
       include: [
