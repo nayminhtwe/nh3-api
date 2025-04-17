@@ -8,7 +8,7 @@ async function sendOrder(item_count, total_amount) {
   console.log("authKey: ", authKey);
 
   const sendData = {
-    to: 95997075241,
+    to: 959957674798,
     message: `${item_count} items - Total ${total_amount} Ks have ordered in L.K.B.NH3`,
     sender: "SMSPoh",
   };
