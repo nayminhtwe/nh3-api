@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-async function sendOrder(item_count, total_amount) {
+async function sendOrder(item_count, total_amount, name) {
   const api = process.env.SMS_API;
   const authKey = process.env.AUTH_KEY;
 
@@ -9,7 +9,7 @@ async function sendOrder(item_count, total_amount) {
 
   const sendData = {
     to: 959957674798,
-    message: `${item_count} items - Total ${total_amount} Ks have ordered in L.K.B.NH3`,
+    message: `${item_count} items - Total ${total_amount} Ks have ordered by ${name} in L.K.B.NH3`,
     sender: "SMSPoh",
   };
 

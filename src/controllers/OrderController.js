@@ -141,7 +141,7 @@ const OrderController = {
     await OrderItem.bulkCreate(createOrderItems);
 
     // send sms
-    await sendOrder(orderItems.length, totalOrderprice);
+    await sendOrder(orderItems.length, totalOrderprice, user.name);
 
     const order = await Order.findByPk(createdOrder.id, {
       include: [
