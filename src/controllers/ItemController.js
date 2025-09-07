@@ -233,23 +233,30 @@ const ItemController = {
       // where: {
       //   main_category_id: category_id
       // },
-      MainCategory,
-      ItemImage,
-      Discount,
-      include: {
-        model: Car,
-        include: [
-          { model: Company, attributes: ["name"] },
-          { model: CarModel, attributes: ["name"] },
-          { model: Engine, attributes: ["enginepower"] },
-        ],
-        through: {
-          attributes: []
+      include: [
+        MainCategory,
+        ItemImage,
+        Discount,
+        {
+          model: Car,
+          through: {
+            attributes: []
+          },
+          where: {
+            model_id: modelId
+          },
+          include: [
+            { model: Company, attributes: ["name"] },
+            { model: CarModel, attributes: ["name"] },
+            { model: Engine, attributes: ["enginepower"] },
+          ],
         },
-        where: {
-          model_id: modelId
-        }
-      }
+        {
+          model: Discount,
+          required: false,
+          attributes: ["id", "discount_type", "discount_value"],
+        },
+      ],
     });
     return res.json(items);
   }),
