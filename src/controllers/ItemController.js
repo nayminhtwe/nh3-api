@@ -228,6 +228,7 @@ const ItemController = {
 
   filterItem: asyncHandler(async (req, res) => {
     // const { modelId,category_id } = req.body;
+    const { user } = req;
     const { modelId } = req.query;
     const items = await Item.findAll({
       // where: {
@@ -258,7 +259,16 @@ const ItemController = {
         },
       ],
     });
-    return res.json(items);
+
+    const discountedItems = ItemService.calculateDiscountItems(items);
+
+    const filteredItems = await filtered(discountedItems, user);
+
+    return res.json(
+      ItemResource.collection({
+        data: filteredItems,
+      })
+    );
   }),
 };
 
