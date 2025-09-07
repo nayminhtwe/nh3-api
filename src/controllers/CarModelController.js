@@ -53,6 +53,23 @@ const CarModelController = {
 
     return res.sendStatus(204);
   }),
+
+  findByCompany: asyncHandler(async (req, res) => {
+    const { company_id } = req.params;
+  
+    // Fetch car models directly from CarModel table
+    const carModels = await CarModel.findAll({
+      where: { company_id },
+      include: Company, // optional: keep if you want company details
+    });
+  
+    if (!carModels.length) {
+      return res.status(404).json({ msg: "No car models found for this company!" });
+    }
+  
+    const carModelResources = CarModelResource.collection(carModels);
+    return res.json(carModelResources);
+  }),
 };
 
 module.exports = CarModelController;

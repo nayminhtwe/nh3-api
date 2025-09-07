@@ -21,4 +21,6 @@ router.delete(
   CarModelController.destroy
 );
 
+router.get("/car-models/company/:company_id", CarModelController.findByCompany);
+
 module.exports = { carModelsRouter: router };
