@@ -228,7 +228,7 @@ const ItemController = {
 
   filterItem: asyncHandler(async (req, res) => {
     // const { modelId,category_id } = req.body;
-    const { modelId } = req.params;
+    const { modelId } = req.query;
     const items = await Item.findAll({
       // where: {
       //   main_category_id: category_id
