@@ -13,6 +13,10 @@ const Company = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: new Date(),
