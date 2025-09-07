@@ -227,11 +227,12 @@ const ItemController = {
   }),
 
   filterItem: asyncHandler(async (req, res) => {
-    const { modelId,category_id } = req.body;
+    // const { modelId,category_id } = req.body;
+    const { modelId } = req.body;
     const items = await Item.findAll({
-      where: {
-        main_category_id: category_id
-      },
+      // where: {
+      //   main_category_id: category_id
+      // },
       include: {
         model: Car,
         through: {
