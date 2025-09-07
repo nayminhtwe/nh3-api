@@ -33,7 +33,7 @@ const ItemController = {
 
     const where = filteredQuery(req.query);
 
-    if(!where.main_category_id) delete where.main_category_id
+    if (!where.main_category_id) delete where.main_category_id
 
     const limit = 10;
     const page = parseInt(req.query.page) || 1;
@@ -233,8 +233,16 @@ const ItemController = {
       // where: {
       //   main_category_id: category_id
       // },
+      MainCategory,
+      ItemImage,
+      Discount,
       include: {
         model: Car,
+        include: [
+          { model: Company, attributes: ["name"] },
+          { model: CarModel, attributes: ["name"] },
+          { model: Engine, attributes: ["enginepower"] },
+        ],
         through: {
           attributes: []
         },
