@@ -10,7 +10,7 @@ async function sendSMS(phone_number, otp_code, brandName) {
   const sendData = {
     to: phone_number,
     message: `Your verification code is ${otp_code} - Luckkabar `,
-    sender: "Luckkabar",
+    from: "Luckkabar",
   };
 
   try {
