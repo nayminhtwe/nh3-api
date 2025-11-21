@@ -9,8 +9,8 @@ async function sendOrder(item_count, total_amount, name) {
 
   const sendData = {
     to: 959768908006,
-    message: `${item_count} items - Total ${total_amount} Ks have ordered by ${name} in L.K.B.NH3`,
-    sender: `${brandName}`,
+    message: `${item_count} items - Total ${total_amount} Ks have ordered by ${name} in Luckkabar`,
+    sender: "Luckkabar",
   };
 
   try {
