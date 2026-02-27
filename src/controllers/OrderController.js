@@ -11,6 +11,10 @@ const ItemImage = require("../models/ItemImage");
 const OrderItem = require("../models/OrderItem");
 const checkPendingStatus = require("../utils/checkPendingStatus");
 const { sendOrder } = require("../utils/sendOrder");
+const {
+  ensureSufficientQuickBooksStock,
+  createQuickBooksSalesReceipt,
+} = require("../services/QuickBooksInventoryService");
 
 const orderIncludes = [OrderStatus, Promotion, Address, User];
 
@@ -69,6 +73,7 @@ const OrderController = {
 
     let totalOrderprice = 0;
     let orderItems = [];
+    let quickBooksLines = [];
 
     for (const itemData of items) {
       const item = await Item.findByPk(itemData.item_id);
@@ -79,6 +84,13 @@ const OrderController = {
 
       if (item.quantity < quantity) {
         return res.status(400).json({ msg: `No enough stock for ${item.name}` });
+      }
+
+      try {
+        await ensureSufficientQuickBooksStock(item, quantity);
+      } catch (error) {
+        const statusCode = error.statusCode || 500;
+        return res.status(statusCode).json({ msg: error.message });
       }
 
       // Calculate the price after applying user percentage
@@ -112,6 +124,12 @@ const OrderController = {
         quantity: quantity,
       });
 
+      quickBooksLines.push({
+        oeNo: item.OE_NO,
+        quantity,
+        unitPrice: discountedPrice,
+      });
+
       item.quantity -= quantity;
       await item.save();
     }
@@ -139,6 +157,12 @@ const OrderController = {
     }));
 
     await OrderItem.bulkCreate(createOrderItems);
+
+    try {
+      await createQuickBooksSalesReceipt(createdOrder.order_number, quickBooksLines);
+    } catch (e) {
+      console.error("Failed to sync order to QuickBooks", e.message);
+    }
 
     // send sms
     await sendOrder(orderItems.length, totalOrderprice, user.name);

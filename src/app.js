@@ -36,6 +36,7 @@ const auth = require("./middlewares/auth");
 const rateLimit = require("express-rate-limit");
 const { cartItemsRouter } = require("./routers/cartItems");
 const { statusesRouter } = require("./routers/statuses");
+const { quickBooksRouter } = require("./routers/quickbooks");
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
@@ -83,6 +84,7 @@ app.use("/api", discountTypesRouter);
 app.use("/api", discountsRouter);
 app.use("/api", slidersRouter);
 app.use("/api", brandsRouter);
+app.use("/api", quickBooksRouter);
 
 app.use(errorHandler);
 

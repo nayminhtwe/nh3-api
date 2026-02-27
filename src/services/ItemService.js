@@ -1,5 +1,8 @@
 const { Sequelize } = require("sequelize");
 const Item = require("../models/Item");
+const {
+  enrichItemsWithQuickBooksQuantity,
+} = require("./QuickBooksInventoryService");
 class ItemService {
   static async getItems({ where = {}, include, limit, offset, user }) {
     const { count, rows: items } = await Item.findAndCountAll({
@@ -33,7 +36,15 @@ class ItemService {
       distinct: true,
     });
 
-    return { count, items };
+    let syncedItems = items;
+
+    try {
+      syncedItems = await enrichItemsWithQuickBooksQuantity(items);
+    } catch (e) {
+      console.error("Failed to enrich items with QuickBooks quantity", e.message);
+    }
+
+    return { count, items: syncedItems };
   }
 
   static async getItem(id, user, include) {
@@ -60,7 +71,20 @@ class ItemService {
       ],
     });
 
-    return item;
+    if (!item) {
+      return item;
+    }
+
+    try {
+      const syncedItem = await enrichItemsWithQuickBooksQuantity(item);
+      return syncedItem;
+    } catch (e) {
+      console.error(
+        "Failed to enrich item with QuickBooks quantity",
+        e.message
+      );
+      return item;
+    }
   }
 
   static calculateDiscountItems(items) {
