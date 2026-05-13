@@ -29,6 +29,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/server",
     "sync": "node src/utils/sync",
+    "sync:quickbooks": "node src/utils/syncQuickBooksTable.mjs",
     "seed:all": "node src/seeds/seed"
   },
   "keywords": [],

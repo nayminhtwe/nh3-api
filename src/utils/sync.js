@@ -24,6 +24,7 @@ const Discount = require("../models/Discount");
 const Slider = require("../models/Slider");
 const Brand = require("../models/Brand");
 const Otp = require("../models/Otp");
+require("../models/QuickBooksToken");
 
 async function sync() {
   try {
