@@ -5,6 +5,14 @@ const {
   disconnect,
 } = require("../services/QuickBooksClient");
 
+function normalizeCallbackQuery(query) {
+  const code = query.code;
+  const realmId = query.realmId ?? query.realmid;
+  const error = query.error;
+  const errorDescription = query.error_description;
+  return { code, realmId, error, errorDescription };
+}
+
 const QuickBooksController = {
   connect: asyncHandler(async (req, res) => {
     const state = `qbo-${Date.now()}`;
@@ -13,15 +21,41 @@ const QuickBooksController = {
   }),
 
   callback: asyncHandler(async (req, res) => {
-    const { code, realmId } = req.query;
+    const { code, realmId, error, errorDescription } = normalizeCallbackQuery(
+      req.query
+    );
 
-    if (!code || !realmId) {
-      return res
-        .status(400)
-        .json({ msg: "Missing code or realmId from QuickBooks callback" });
+    if (error) {
+      return res.status(400).json({
+        msg: "QuickBooks authorization was denied or failed",
+        error,
+        error_description: errorDescription,
+      });
     }
 
-    await exchangeCodeForTokens(code, realmId);
+    if (!code || !realmId) {
+      return res.status(400).json({
+        msg:
+          "Missing code or realmId. The success message appears here only after Intuit redirects to this callback URL (not on /connect).",
+        hint: "Ensure Redirect URI in Intuit Developer matches QUICKBOOKS_REDIRECT_URI exactly, e.g. https://mgt.luckkabarnh3.com/api/quickbooks/callback",
+        received_query_keys: Object.keys(req.query),
+      });
+    }
+
+    try {
+      await exchangeCodeForTokens(code, realmId);
+    } catch (e) {
+      const intuitBody = e.response?.data;
+      const detail =
+        typeof intuitBody === "string"
+          ? intuitBody
+          : intuitBody?.error || intuitBody?.message || e.message;
+      return res.status(e.response?.status || 502).json({
+        msg: "Token exchange with QuickBooks failed",
+        detail,
+        intuit: intuitBody,
+      });
+    }
 
     return res.json({ msg: "QuickBooks connected successfully", realmId });
   }),
