@@ -3,7 +3,22 @@ const QuickBooksToken = require("../models/QuickBooksToken");
 
 const AUTH_BASE_URL = "https://appcenter.intuit.com/connect/oauth2";
 const TOKEN_URL = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
-const API_BASE_URL = "https://quickbooks.api.intuit.com/v3/company";
+
+/** Sandbox OAuth tokens must call sandbox-quickbooks.api.intuit.com, not production. */
+function getCompanyApiBase() {
+  const useSandbox =
+    process.env.QUICKBOOKS_ENVIRONMENT === "sandbox" ||
+    process.env.QUICKBOOKS_USE_SANDBOX === "true" ||
+    process.env.QUICKBOOKS_USE_SANDBOX === "1";
+  return useSandbox
+    ? "https://sandbox-quickbooks.api.intuit.com/v3/company"
+    : "https://quickbooks.api.intuit.com/v3/company";
+}
+
+/** Escape single quotes for QuickBooks query string literals (SQL-style '' not backslash). */
+function escapeQboStringLiteral(value) {
+  return String(value).replace(/'/g, "''");
+}
 
 function getRequiredEnv(name) {
   const value = process.env[name];
@@ -150,34 +165,59 @@ async function disconnect() {
   await QuickBooksToken.destroy({ where: {} });
 }
 
+function formatQuickBooksFault(data) {
+  if (!data || !data.Fault || !data.Fault.Error) {
+    return JSON.stringify(data);
+  }
+  return data.Fault.Error.map((e) => e.Detail || e.Message || String(e)).join(
+    "; "
+  );
+}
+
 async function queryQuickBooks(query) {
   const { accessToken, realmId } = await getValidAccessToken();
 
-  const encodedQuery = query.replace(/'/g, "\\'");
+  const base = getCompanyApiBase();
+  const url = `${base}/${realmId}/query`;
 
-  const url = `${API_BASE_URL}/${realmId}/query`;
+  try {
+    const response = await axios.get(url, {
+      params: {
+        query,
+        minorversion: 65,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    });
 
-  const response = await axios.get(url, {
-    params: {
-      query: encodedQuery,
-      minorversion: 65,
-    },
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: "application/json",
-    },
-  });
-
-  return response.data;
+    return response.data;
+  } catch (e) {
+    const body = e.response?.data;
+    const detail = body ? formatQuickBooksFault(body) : e.message;
+    const err = new Error(
+      `QuickBooks query failed (${e.response?.status || "?"}): ${detail}`
+    );
+    err.statusCode = e.response?.status;
+    err.intuitBody = body;
+    throw err;
+  }
 }
 
 async function getItemBySku(sku) {
-  const query = `select * from Item where Sku='${sku}'`;
+  const safe = escapeQboStringLiteral(sku);
+  const query = `select * from Item where Sku = '${safe}'`;
   const data = await queryQuickBooks(query);
 
-  const items = data.QueryResponse && data.QueryResponse.Item;
+  const raw = data.QueryResponse && data.QueryResponse.Item;
 
-  if (!items || items.length === 0) {
+  if (!raw) {
+    return null;
+  }
+
+  const items = Array.isArray(raw) ? raw : [raw];
+  if (items.length === 0) {
     return null;
   }
 
@@ -197,7 +237,8 @@ async function getItemQuantityBySku(sku) {
 async function createSalesReceipt(orderNumber, customerName, lines) {
   const { accessToken, realmId } = await getValidAccessToken();
 
-  const url = `${API_BASE_URL}/${realmId}/salesreceipt`;
+  const base = getCompanyApiBase();
+  const url = `${base}/${realmId}/salesreceipt`;
 
   const today = new Date().toISOString().slice(0, 10);
 
