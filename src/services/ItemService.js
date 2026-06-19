@@ -4,35 +4,41 @@ const {
   enrichItemsWithQuickBooksQuantity,
 } = require("./QuickBooksInventoryService");
 class ItemService {
+  static getPriceAttribute(user) {
+    return [
+      Sequelize.literal(
+        user.is_approve === 1
+          ? user.percentage === 0
+            ? "price"
+            : `ROUND(price - (price * (${user.percentage} / 100)), 2)`
+          : -1
+      ),
+      "price",
+    ];
+  }
+
+  static getItemAttributes(user) {
+    return [
+      "id",
+      "name",
+      "quantity",
+      "brandName",
+      "description",
+      "main_category_id",
+      "is_feature",
+      "is_universal",
+      "OE_NO",
+      ItemService.getPriceAttribute(user),
+    ];
+  }
+
   static async getItems({ where = {}, include, limit, offset, user }) {
     const { count, rows: items } = await Item.findAndCountAll({
       where,
       include,
       limit,
       offset,
-      attributes: [
-        "id",
-        "name",
-        "quantity",
-        "brandName",
-        "description",
-        "main_category_id",
-        "is_feature",
-        "is_universal",
-        "OE_NO",
-        [
-          Sequelize.literal(
-            user.is_approve === 1
-              ? (user.percentage === 0 ? "price" : `ROUND(price - (price * (${user.percentage} / 100)), 2)`)
-              : -1
-
-            // user.percentage === 0
-            //   ? "price"
-            //   : `ROUND(price - (price * (${user.percentage} / 100)), 2)`
-          ),
-          "price",
-        ],
-      ],
+      attributes: ItemService.getItemAttributes(user),
       distinct: true,
     });
 
@@ -50,25 +56,7 @@ class ItemService {
   static async getItem(id, user, include) {
     const item = await Item.findByPk(id, {
       include,
-      attributes: [
-        "id",
-        "name",
-        "brandName",
-        "quantity",
-        "description",
-        "main_category_id",
-        "is_feature",
-        "is_universal",
-        "OE_NO",
-        [
-          Sequelize.literal(
-            user.is_approve === 1
-              ? (user.percentage === 0 ? "price" : `ROUND(price - (price * (${user.percentage} / 100)), 2)`)
-              : -1
-          ),
-          "price",
-        ],
-      ],
+      attributes: ItemService.getItemAttributes(user),
     });
 
     if (!item) {

@@ -231,9 +231,7 @@ const ItemController = {
     const { user } = req;
     const { modelId } = req.query;
     const items = await Item.findAll({
-      // where: {
-      //   main_category_id: category_id
-      // },
+      attributes: ItemService.getItemAttributes(user),
       include: [
         MainCategory,
         ItemImage,
