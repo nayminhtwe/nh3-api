@@ -4,6 +4,9 @@ const {
   exchangeCodeForTokens,
   disconnect,
 } = require("../services/QuickBooksClient");
+const {
+  syncAllLocalStockFromQuickBooks,
+} = require("../services/QuickBooksInventoryService");
 
 function normalizeCallbackQuery(query) {
   const code = query.code;
@@ -63,6 +66,14 @@ const QuickBooksController = {
   disconnect: asyncHandler(async (req, res) => {
     await disconnect();
     return res.json({ msg: "QuickBooks disconnected successfully" });
+  }),
+
+  syncStock: asyncHandler(async (req, res) => {
+    const result = await syncAllLocalStockFromQuickBooks();
+    return res.json({
+      msg: "QuickBooks stock sync completed",
+      ...result,
+    });
   }),
 };
 

@@ -12,6 +12,9 @@ const CarModel = require("../models/CarModel");
 const Discount = require("../models/Discount");
 const ItemService = require("../services/ItemService");
 const { filtered, paginate, filteredQuery } = require("../utils/itemUtils");
+const {
+  enrichItemsWithQuickBooksQuantity,
+} = require("../services/QuickBooksInventoryService");
 
 const includeFields = [
   MainCategory,
@@ -258,7 +261,14 @@ const ItemController = {
       ],
     });
 
-    const discountedItems = ItemService.calculateDiscountItems(items);
+    let syncedItems = items;
+    try {
+      syncedItems = await enrichItemsWithQuickBooksQuantity(items);
+    } catch (e) {
+      console.error("Failed to enrich filter-items with QuickBooks quantity", e.message);
+    }
+
+    const discountedItems = ItemService.calculateDiscountItems(syncedItems);
 
     const filteredItems = await filtered(discountedItems, user);
 

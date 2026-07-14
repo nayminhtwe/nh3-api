@@ -82,15 +82,15 @@ const OrderController = {
 
       const quantity = itemData.quantity;
 
-      if (item.quantity < quantity) {
-        return res.status(400).json({ msg: `No enough stock for ${item.name}` });
-      }
-
       try {
         await ensureSufficientQuickBooksStock(item, quantity);
       } catch (error) {
         const statusCode = error.statusCode || 500;
         return res.status(statusCode).json({ msg: error.message });
+      }
+
+      if (item.quantity < quantity) {
+        return res.status(400).json({ msg: `No enough stock for ${item.name}` });
       }
 
       // Calculate the price after applying user percentage

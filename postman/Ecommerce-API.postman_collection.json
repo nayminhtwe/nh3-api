@@ -889,6 +889,16 @@
             "header": [],
             "url": "{{baseUrl}}/api/quickbooks/disconnect"
           }
+        },
+        {
+          "name": "Sync Stock (QB → local DB)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/quickbooks/sync-stock",
+            "description": "Pulls QtyOnHand from QuickBooks by Sku=OE_NO and updates items.quantity in local DB."
+          }
         }
       ]
     }
