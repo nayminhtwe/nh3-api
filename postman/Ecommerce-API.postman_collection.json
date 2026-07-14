@@ -1,0 +1,896 @@
+{
+  "info": {
+    "name": "Ecommerce API (Production)",
+    "description": "Postman collection for ecommerce-api.\n\nBase URL: https://mgt.luckkabarnh3.com\n\n1. Run Auth → Login (or OTP register flow)\n2. Copy `access_token` from the response into the collection variable `access_token`\n3. Authenticated requests use Bearer {{access_token}}",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://mgt.luckkabarnh3.com"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth / Users",
+      "item": [
+        {
+          "name": "OTP Request (Register)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone_number\": \"0912345678\"\n}"
+            },
+            "url": "{{baseUrl}}/api/otp-request"
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transaction_id\": \"\",\n  \"otp_code\": \"\",\n  \"name\": \"Test User\",\n  \"phone_number\": \"0912345678\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/register"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "  const json = pm.response.json();",
+                  "  if (json.access_token) {",
+                  "    pm.collectionVariables.set('access_token', json.access_token);",
+                  "  }",
+                  "  if (json.refresh_token) {",
+                  "    pm.collectionVariables.set('refresh_token', json.refresh_token);",
+                  "  }",
+                  "  if (json.data && json.data.access_token) {",
+                  "    pm.collectionVariables.set('access_token', json.data.access_token);",
+                  "  }",
+                  "  if (json.data && json.data.refresh_token) {",
+                  "    pm.collectionVariables.set('refresh_token', json.data.refresh_token);",
+                  "  }",
+                  "} catch (e) {}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone_number\": \"0912345678\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/login"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/refresh-token"
+          }
+        },
+        {
+          "name": "OTP Reset Request",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone_number\": \"0912345678\"\n}"
+            },
+            "url": "{{baseUrl}}/api/otp-reset"
+          }
+        },
+        {
+          "name": "Reset Password (OTP Verify)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transaction_id\": \"\",\n  \"otp_code\": \"\",\n  \"phone_number\": \"0912345678\"\n}"
+            },
+            "url": "{{baseUrl}}/api/reset"
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/verify"
+          }
+        },
+        {
+          "name": "Update Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/update"
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/users"
+          }
+        },
+        {
+          "name": "Set User Percentage",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"percentage\": 10\n}"
+            },
+            "url": "{{baseUrl}}/api/users/1/percentage"
+          }
+        },
+        {
+          "name": "Restore User",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/users/1/restore"
+          }
+        },
+        {
+          "name": "Revoke User Refresh Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/users/1/refresh-token"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/users/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Items",
+      "item": [
+        {
+          "name": "List Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/items?page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "items"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "feature", "value": "true", "disabled": true },
+                { "key": "universal", "value": "true", "disabled": true },
+                { "key": "category", "value": "1", "disabled": true },
+                { "key": "OE_NO", "value": "A-0233", "disabled": true },
+                { "key": "name", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Featured Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/items?feature=true"
+          }
+        },
+        {
+          "name": "Get Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/items/1"
+          }
+        },
+        {
+          "name": "Discount Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/discount-items?page=1"
+          }
+        },
+        {
+          "name": "Filter Items by Car Model",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/filter-items?modelId=1"
+          }
+        },
+        {
+          "name": "Create Item",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sample Part\",\n  \"brandName\": \"Brand\",\n  \"main_category_id\": 1,\n  \"is_feature\": false,\n  \"is_universal\": false,\n  \"OE_NO\": \"OE-TEST-001\",\n  \"quantity\": 10,\n  \"status_id\": 1,\n  \"LKB_No\": \"LKB-TEST-001\",\n  \"description\": \"Test item\",\n  \"price\": 100.00\n}"
+            },
+            "url": "{{baseUrl}}/api/items"
+          }
+        },
+        {
+          "name": "Upload Item Images",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "items",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select one or more image files"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/api/items/1/upload"
+          }
+        },
+        {
+          "name": "Update Item",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Part\",\n  \"brandName\": \"Brand\",\n  \"OE_NO\": \"OE-TEST-001\",\n  \"price\": 120.00\n}"
+            },
+            "url": "{{baseUrl}}/api/items/1"
+          }
+        },
+        {
+          "name": "Delete Item",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/items/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "List My Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/orders"
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/orders/1"
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address_id\": 1,\n  \"promotion_id\": null,\n  \"deliveryfees\": 0,\n  \"items\": [\n    {\n      \"item_id\": 1,\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/orders"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carts",
+      "item": [
+        {
+          "name": "List Carts",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/carts"
+          }
+        },
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"item_id\": 1,\n  \"quantity\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/carts/add"
+          }
+        },
+        {
+          "name": "Update Cart",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            },
+            "url": "{{baseUrl}}/api/carts/1"
+          }
+        },
+        {
+          "name": "Delete Cart",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/carts/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Addresses",
+      "item": [
+        {
+          "name": "List Addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/addresses"
+          }
+        },
+        {
+          "name": "Create Address",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"township\": \"Yangon\",\n  \"address\": \"No.1 Test Street\",\n  \"phone_number\": \"0912345678\"\n}"
+            },
+            "url": "{{baseUrl}}/api/addresses"
+          }
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/addresses/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cars / Catalog",
+      "item": [
+        {
+          "name": "List Companies",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/companies"
+          }
+        },
+        {
+          "name": "Create Company",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Toyota\"\n}"
+            },
+            "url": "{{baseUrl}}/api/companies"
+          }
+        },
+        {
+          "name": "Update Company",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Toyota Updated\"\n}"
+            },
+            "url": "{{baseUrl}}/api/companies/1"
+          }
+        },
+        {
+          "name": "Delete Company",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/companies/1"
+          }
+        },
+        {
+          "name": "List Series",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/series"
+          }
+        },
+        {
+          "name": "Create Series",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Corolla\"\n}"
+            },
+            "url": "{{baseUrl}}/api/series"
+          }
+        },
+        {
+          "name": "List Car Models",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/car-models"
+          }
+        },
+        {
+          "name": "Car Models by Company",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/car-models/company/1"
+          }
+        },
+        {
+          "name": "Create Car Model",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Altis\",\n  \"company_id\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/car-models"
+          }
+        },
+        {
+          "name": "List Years",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/years"
+          }
+        },
+        {
+          "name": "Create Year",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"year\": 2020\n}"
+            },
+            "url": "{{baseUrl}}/api/years"
+          }
+        },
+        {
+          "name": "List Engines",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/engines"
+          }
+        },
+        {
+          "name": "Create Engine",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enginepower\": \"1500cc\"\n}"
+            },
+            "url": "{{baseUrl}}/api/engines"
+          }
+        },
+        {
+          "name": "List Cars",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/cars"
+          }
+        },
+        {
+          "name": "Create Car",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_id\": 1,\n  \"model_id\": 1,\n  \"year\": 2020,\n  \"engine_id\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/cars"
+          }
+        },
+        {
+          "name": "List Car Items",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/car-items"
+          }
+        },
+        {
+          "name": "Create Car Item",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"car_id\": 1,\n  \"item_id\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/car-items"
+          }
+        },
+        {
+          "name": "List Main Categories",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/main-categories"
+          }
+        },
+        {
+          "name": "Create Main Category",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Brake\"\n}"
+            },
+            "url": "{{baseUrl}}/api/main-categories"
+          }
+        },
+        {
+          "name": "List Brands",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/brands"
+          }
+        },
+        {
+          "name": "Create Brand",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sample Brand\"\n}"
+            },
+            "url": "{{baseUrl}}/api/brands"
+          }
+        },
+        {
+          "name": "List Statuses",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/statuses"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Discounts / Promotions",
+      "item": [
+        {
+          "name": "List Discount Types",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/discount-types"
+          }
+        },
+        {
+          "name": "Create Discount Type",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"percentage\"\n}"
+            },
+            "url": "{{baseUrl}}/api/discount-types"
+          }
+        },
+        {
+          "name": "List Discounts",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/discounts"
+          }
+        },
+        {
+          "name": "Create Discount",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"item_id\": 1,\n  \"discount_type\": \"percentage\",\n  \"discount_value\": 10,\n  \"is_active\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/discounts"
+          }
+        },
+        {
+          "name": "List Promotions",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/promotions"
+          }
+        },
+        {
+          "name": "Create Promotion",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Year\",\n  \"discount_value\": 5\n}"
+            },
+            "url": "{{baseUrl}}/api/promotions"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order Status / Order Items / Sliders",
+      "item": [
+        {
+          "name": "List Order Statuses",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/order-statuses"
+          }
+        },
+        {
+          "name": "Create Order Status",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pending\"\n}"
+            },
+            "url": "{{baseUrl}}/api/order-statuses"
+          }
+        },
+        {
+          "name": "List Order Items",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/order-items"
+          }
+        },
+        {
+          "name": "List Item Images",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/item-images"
+          }
+        },
+        {
+          "name": "List Sliders",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/sliders"
+          }
+        },
+        {
+          "name": "Create Slider (multipart)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "image", "type": "file", "src": [] },
+                { "key": "title", "type": "text", "value": "Banner" }
+              ]
+            },
+            "url": "{{baseUrl}}/api/sliders"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles / Permissions",
+      "item": [
+        {
+          "name": "List Roles",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/roles"
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"admin\"\n}"
+            },
+            "url": "{{baseUrl}}/api/roles"
+          }
+        },
+        {
+          "name": "List Permissions",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/permissions"
+          }
+        },
+        {
+          "name": "Create Permission",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"manage_items\"\n}"
+            },
+            "url": "{{baseUrl}}/api/permissions"
+          }
+        },
+        {
+          "name": "List Role Has Permissions",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/role-has-permissions"
+          }
+        }
+      ]
+    },
+    {
+      "name": "QuickBooks",
+      "item": [
+        {
+          "name": "Connect (open in browser)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/quickbooks/connect",
+            "description": "Opens Intuit OAuth. Prefer opening this URL in a browser."
+          }
+        },
+        {
+          "name": "Callback (Intuit redirects here)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/quickbooks/callback?code=&realmId=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "quickbooks", "callback"],
+              "query": [
+                { "key": "code", "value": "" },
+                { "key": "realmId", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Disconnect",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/quickbooks/disconnect"
+          }
+        }
+      ]
+    }
+  ]
+}

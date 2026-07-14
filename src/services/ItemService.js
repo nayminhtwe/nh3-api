@@ -5,12 +5,15 @@ const {
 } = require("./QuickBooksInventoryService");
 class ItemService {
   static getPriceAttribute(user) {
+    const isApproved = user && Number(user.is_approve) === 1;
+    const percentage = user && Number(user.percentage) ? Number(user.percentage) : 0;
+
     return [
       Sequelize.literal(
-        user.is_approve === 1
-          ? user.percentage === 0
+        isApproved
+          ? percentage === 0
             ? "price"
-            : `ROUND(price - (price * (${user.percentage} / 100)), 2)`
+            : `ROUND(price - (price * (${percentage} / 100)), 2)`
           : -1
       ),
       "price",

@@ -25,6 +25,6 @@ router.put("/items/:id", validateId, validator, ItemController.update);
 
 router.delete("/items/:id", validateId, validator, ItemController.destroy);
 
-router.get("/filter-items", ItemController.filterItem);
+router.get("/filter-items", auth, ItemController.filterItem);
 
 module.exports = { itemsRouter: router };
