@@ -70,6 +70,11 @@ const QuickBooksController = {
 
   syncStock: asyncHandler(async (req, res) => {
     const result = await syncAllLocalStockFromQuickBooks();
+
+    if (result.skipped) {
+      return res.status(400).json(result);
+    }
+
     return res.json({
       msg: "QuickBooks stock sync completed",
       ...result,

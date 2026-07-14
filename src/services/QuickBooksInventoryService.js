@@ -2,6 +2,16 @@ const QuickBooksClient = require("./QuickBooksClient");
 const Item = require("../models/Item");
 const { Op } = require("sequelize");
 
+/**
+ * STOCK_SOURCE=.env
+ * - local      → use DB quantity only (no QuickBooks stock calls)
+ * - quickbooks → read/write stock via QuickBooks and update local DB
+ */
+function isQuickBooksStockEnabled() {
+  const source = (process.env.STOCK_SOURCE || "local").toLowerCase().trim();
+  return source === "quickbooks" || source === "qb";
+}
+
 async function persistLocalQuantity(item, qty) {
   if (typeof qty !== "number" || !item?.id) {
     return false;
@@ -29,6 +39,10 @@ async function persistLocalQuantity(item, qty) {
 }
 
 async function enrichItemsWithQuickBooksQuantity(items) {
+  if (!isQuickBooksStockEnabled()) {
+    return items;
+  }
+
   const list = Array.isArray(items) ? items : [items];
 
   const enriched = await Promise.all(
@@ -61,6 +75,10 @@ async function enrichItemsWithQuickBooksQuantity(items) {
 }
 
 async function ensureSufficientQuickBooksStock(item, requestedQuantity) {
+  if (!isQuickBooksStockEnabled()) {
+    return;
+  }
+
   const oeNo = item.OE_NO;
 
   if (!oeNo) {
@@ -86,6 +104,19 @@ async function ensureSufficientQuickBooksStock(item, requestedQuantity) {
  * Sync all local items that have OE_NO from QuickBooks QtyOnHand into items.quantity.
  */
 async function syncAllLocalStockFromQuickBooks() {
+  if (!isQuickBooksStockEnabled()) {
+    return {
+      skipped: true,
+      msg: 'STOCK_SOURCE is not "quickbooks". Set STOCK_SOURCE=quickbooks in .env to enable.',
+      total: 0,
+      updated: 0,
+      unchanged: 0,
+      notFoundInQuickBooks: 0,
+      failed: 0,
+      details: [],
+    };
+  }
+
   const localItems = await Item.findAll({
     where: {
       [Op.and]: [
@@ -97,6 +128,7 @@ async function syncAllLocalStockFromQuickBooks() {
   });
 
   const result = {
+    skipped: false,
     total: localItems.length,
     updated: 0,
     unchanged: 0,
@@ -156,6 +188,10 @@ async function syncAllLocalStockFromQuickBooks() {
 }
 
 async function createQuickBooksSalesReceipt(orderNumber, lines) {
+  if (!isQuickBooksStockEnabled()) {
+    return;
+  }
+
   const salesLines = [];
 
   for (const line of lines) {
@@ -182,6 +218,7 @@ async function createQuickBooksSalesReceipt(orderNumber, lines) {
 }
 
 module.exports = {
+  isQuickBooksStockEnabled,
   enrichItemsWithQuickBooksQuantity,
   ensureSufficientQuickBooksStock,
   syncAllLocalStockFromQuickBooks,

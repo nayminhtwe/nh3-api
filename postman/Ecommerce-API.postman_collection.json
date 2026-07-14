@@ -897,7 +897,7 @@
             "method": "POST",
             "header": [],
             "url": "{{baseUrl}}/api/quickbooks/sync-stock",
-            "description": "Pulls QtyOnHand from QuickBooks by Sku=OE_NO and updates items.quantity in local DB."
+            "description": "Pulls QtyOnHand from QuickBooks by Sku=OE_NO and updates items.quantity.\nRequires STOCK_SOURCE=quickbooks in .env (otherwise skipped)."
           }
         }
       ]
